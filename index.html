@@ -1042,7 +1042,8 @@ main { flex: 1; display: flex; overflow: hidden; }
     const [r, c] = key.split(',').map(Number);
     return cell.t + '\n\n' +
       'Cell(' + r + ',' + c + ') Step ' + currentStep +
-      ' #LOGOS_CA';
+      ' #LOGOS_CA\n' +
+      window.location.href.split('?')[0].split('#')[0];
   }
 
   function canvasToBlob(canvas) {
