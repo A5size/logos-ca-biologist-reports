@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOGOS-CA Biologist Reports Viewer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&family=VT323&display=swap');
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --crt-bg: #0a0a12;
+  --crt-dark: #0e0e1a;
+  --crt-panel: #101020;
+  --crt-border: #2a2a4a;
+  --crt-green: #33ff66;
+  --crt-green-dim: #1a8033;
+  --crt-green-glow: rgba(51, 255, 102, 0.12);
+  --crt-cyan: #44ddee;
+  --crt-cyan-dim: #227788;
+  --crt-yellow: #ffdd44;
+  --crt-yellow-dim: #998822;
+  --crt-amber: #ffaa22;
+  --crt-magenta: #dd55cc;
+  --crt-red: #ff4444;
+  --crt-white: #ccccdd;
+  --crt-gray: #555570;
+  --crt-gray-dim: #333348;
+  --pixel: 'Press Start 2P', 'DotGothic16', monospace;
+  --terminal: 'VT323', 'DotGothic16', monospace;
+  --region1: #ff6655;
+  --region2: #55aaff;
+  --region3: #55dd77;
+  --region4: #ffcc33;
+}
+
+html { height: 100%; }
+
+body {
+  min-height: 100%;
+  background: #000;
+  color: var(--crt-white);
+  font-family: var(--terminal);
+  overflow: hidden;
+}
+
+/* CRT scanlines */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px, transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px, rgba(0, 0, 0, 0.15) 4px
+  );
+  pointer-events: none;
+  z-index: 10000;
+}
+
+/* ─── Loading / Boot ─── */
+#loading-screen {
+  position: fixed; inset: 0;
+  background: #000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.8s ease;
+}
+#loading-screen.hidden { opacity: 0; pointer-events: none; }
+
+.boot-text {
+  font-family: var(--pixel);
+  font-size: 10px;
+  color: var(--crt-green);
+  text-align: left;
+  line-height: 2.2;
+  text-shadow: 0 0 8px var(--crt-green-glow), 0 0 2px var(--crt-green);
+  white-space: pre;
+}
+@keyframes blink-cursor {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+#loading-msg {
+  font-family: var(--pixel);
+  font-size: 9px;
+  color: var(--crt-cyan);
+  margin-top: 24px;
+  text-shadow: 0 0 6px rgba(68, 221, 238, 0.3);
+}
+
+/* ─── App ─── */
+#app {
+  display: none;
+  height: 100vh;
+  flex-direction: column;
+  background: var(--crt-bg);
+}
+#app.ready { display: flex; }
+
+/* ─── Header ─── */
+header {
+  flex-shrink: 0;
+  background: var(--crt-panel);
+  border-bottom: 2px solid var(--crt-border);
+  padding: 10px 16px 8px;
+}
+.title-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.title-bar .dots { display: flex; gap: 5px; }
+.title-bar .dot { width: 10px; height: 10px; border: 1px solid; }
+.title-bar .dot.r { background: var(--crt-red); border-color: #aa2222; }
+.title-bar .dot.y { background: var(--crt-yellow); border-color: #aa8811; }
+.title-bar .dot.g { background: var(--crt-green); border-color: #11aa33; }
+
+header h1 {
+  font-family: var(--pixel);
+  font-size: 11px;
+  color: var(--crt-cyan);
+  text-shadow: 0 0 10px rgba(68, 221, 238, 0.3);
+  letter-spacing: 1px;
+}
+header h1 .sub {
+  color: var(--crt-gray);
+  font-size: 9px;
+}
+
+/* ─── Controls ─── */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.step-label {
+  font-family: var(--pixel);
+  font-size: 10px;
+  color: var(--crt-green);
+  min-width: 110px;
+  text-shadow: 0 0 6px var(--crt-green-glow);
+}
+
+.slider-wrap {
+  flex: 1; min-width: 180px; max-width: 560px;
+}
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%; height: 8px;
+  background: var(--crt-dark);
+  border: 2px solid var(--crt-border);
+  outline: none; cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 18px;
+  background: var(--crt-green);
+  border: 2px solid var(--crt-green-dim);
+  cursor: grab;
+  box-shadow: 0 0 6px var(--crt-green-glow);
+}
+input[type=range]::-moz-range-thumb {
+  width: 14px; height: 18px;
+  background: var(--crt-green);
+  border: 2px solid var(--crt-green-dim);
+  border-radius: 0; cursor: grab;
+}
+
+.tick-marks {
+  display: flex; justify-content: space-between;
+  padding: 3px 2px 0;
+  font-family: var(--pixel);
+  font-size: 7px; color: var(--crt-gray);
+}
+
+.retro-btn {
+  font-family: var(--pixel);
+  font-size: 9px;
+  padding: 6px 14px;
+  background: var(--crt-dark);
+  color: var(--crt-green);
+  border: 2px solid var(--crt-border);
+  cursor: pointer;
+  text-shadow: 0 0 4px var(--crt-green-glow);
+  transition: all 0.1s;
+}
+.retro-btn:hover {
+  background: var(--crt-border);
+  border-color: var(--crt-green-dim);
+}
+.retro-btn:active { transform: translate(1px, 1px); }
+.retro-btn.active {
+  background: var(--crt-green-dim);
+  color: #000; border-color: var(--crt-green);
+  text-shadow: none;
+}
+
+/* ─── Main ─── */
+main { flex: 1; display: flex; overflow: hidden; }
+
+/* ─── Grid panel ─── */
+.grid-panel {
+  flex-shrink: 0;
+  padding: 14px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  overflow: auto;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px; padding: 4px;
+  background: var(--crt-dark);
+  border: 3px solid var(--crt-border);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 0 15px rgba(51,255,102,0.04);
+}
+
+.cell {
+  width: 60px; height: 60px;
+  cursor: pointer;
+  image-rendering: pixelated;
+  transition: box-shadow 0.08s;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid #111;
+}
+.cell img {
+  width: 100%; height: 100%;
+  image-rendering: pixelated;
+  display: block;
+}
+.cell:hover {
+  z-index: 10;
+  box-shadow: 0 0 0 2px var(--crt-cyan), 0 0 12px rgba(68,221,238,0.4);
+  border-color: var(--crt-cyan);
+}
+.cell.pinned {
+  box-shadow: 0 0 0 2px var(--crt-yellow), 0 0 16px rgba(255,221,68,0.3);
+  border-color: var(--crt-yellow);
+}
+.cell.rb { border-bottom: 2px solid var(--crt-amber); }
+.cell.rt { border-top: 2px solid var(--crt-amber); }
+.cell.rr { border-right: 2px solid var(--crt-amber); }
+.cell.rl { border-left: 2px solid var(--crt-amber); }
+
+.grid-footer {
+  margin-top: 10px;
+  display: flex; gap: 12px;
+  font-family: var(--pixel);
+  font-size: 7px;
+}
+.region-badge { display: flex; align-items: center; gap: 4px; }
+.region-dot { width: 8px; height: 8px; }
+
+/* ─── Detail panel ─── */
+.detail-panel {
+  flex: 1; min-width: 0;
+  border-left: 2px solid var(--crt-border);
+  background: var(--crt-panel);
+  overflow-y: auto;
+  padding: 20px 24px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--crt-gray-dim) var(--crt-dark);
+}
+.detail-panel::-webkit-scrollbar { width: 8px; }
+.detail-panel::-webkit-scrollbar-track { background: var(--crt-dark); }
+.detail-panel::-webkit-scrollbar-thumb {
+  background: var(--crt-gray-dim);
+  border: 1px solid var(--crt-border);
+}
+
+.detail-empty {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 100%; text-align: center;
+}
+.detail-empty .msg {
+  font-family: var(--terminal);
+  font-size: 20px;
+  color: var(--crt-green-dim);
+  line-height: 1.8;
+  text-shadow: 0 0 4px var(--crt-green-glow);
+}
+.detail-empty .hint {
+  font-family: var(--pixel);
+  font-size: 8px; color: var(--crt-gray);
+  margin-top: 16px; padding: 6px 14px;
+  border: 1px solid var(--crt-gray-dim);
+}
+.detail-empty .cursor-block {
+  display: inline-block;
+  width: 10px; height: 18px;
+  background: var(--crt-green);
+  animation: blink-cursor 1s step-end infinite;
+  vertical-align: middle;
+  margin-left: 2px;
+}
+
+.detail-header {
+  display: flex; align-items: flex-start;
+  gap: 16px; margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed var(--crt-gray-dim);
+}
+.detail-sketch-wrap {
+  flex-shrink: 0; padding: 4px;
+  background: #000;
+  border: 2px solid var(--crt-border);
+  box-shadow: 0 0 12px rgba(0,0,0,0.6);
+}
+.detail-sketch {
+  width: 128px; height: 128px;
+  image-rendering: pixelated;
+  display: block;
+}
+.detail-meta { flex: 1; min-width: 0; }
+.detail-cell-id {
+  font-family: var(--pixel);
+  font-size: 8px; color: var(--crt-gray);
+  margin-bottom: 8px;
+  display: flex; align-items: center;
+  gap: 8px; flex-wrap: wrap;
+}
+.region-tag {
+  font-family: var(--pixel);
+  font-size: 7px; padding: 2px 6px;
+  color: #000;
+}
+.detail-title {
+  font-family: var(--terminal);
+  font-size: 24px; color: var(--crt-cyan);
+  line-height: 1.3;
+  text-shadow: 0 0 8px rgba(68,221,238,0.2);
+  margin-bottom: 6px; word-break: break-word;
+}
+.detail-pinned-note {
+  font-family: var(--pixel);
+  font-size: 7px; color: var(--crt-yellow-dim);
+  margin-top: 6px;
+}
+.detail-summary-label {
+  font-family: var(--pixel);
+  font-size: 8px; color: var(--crt-green-dim);
+  letter-spacing: 2px; margin-bottom: 10px;
+  text-shadow: 0 0 4px var(--crt-green-glow);
+}
+.detail-summary-label::before { content: '> '; }
+.detail-summary {
+  font-family: var(--terminal);
+  font-size: 19px; line-height: 1.55;
+  color: var(--crt-white);
+  white-space: pre-wrap; word-break: break-word;
+}
+
+/* ─── Footer ─── */
+.status-bar {
+  flex-shrink: 0;
+  padding: 6px 16px;
+  border-top: 2px solid var(--crt-border);
+  background: var(--crt-panel);
+  font-family: var(--pixel);
+  font-size: 7px; color: var(--crt-gray);
+  display: flex; justify-content: space-between;
+  align-items: center;
+}
+.status-bar a {
+  color: var(--crt-cyan-dim);
+  text-decoration: none;
+}
+.status-bar a:hover {
+  color: var(--crt-cyan);
+  text-decoration: underline;
+}
+
+/* ─── Intro screen ─── */
+#intro-screen {
+  position: fixed; inset: 0;
+  background: var(--crt-bg);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 8000;
+  transition: opacity 0.6s ease;
+}
+#intro-screen.visible { display: flex; }
+#intro-screen.hidden { opacity: 0; pointer-events: none; }
+
+.intro-content {
+  max-width: 560px;
+  padding: 0 24px;
+}
+
+.intro-title-line {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.intro-icon {
+  font-family: var(--pixel);
+  font-size: 10px;
+  color: var(--crt-green);
+  line-height: 1.1;
+  text-shadow: 0 0 8px var(--crt-green-glow);
+  letter-spacing: 2px;
+}
+.intro-title {
+  font-family: var(--pixel);
+  font-size: 16px;
+  color: var(--crt-cyan);
+  text-shadow: 0 0 12px rgba(68, 221, 238, 0.3);
+  letter-spacing: 2px;
+  line-height: 1.6;
+}
+.intro-title span {
+  font-size: 10px;
+  color: var(--crt-gray);
+  letter-spacing: 3px;
+}
+
+.intro-divider {
+  height: 2px;
+  background: var(--crt-border);
+  margin-bottom: 24px;
+  box-shadow: 0 0 6px rgba(42, 42, 74, 0.5);
+}
+
+.intro-desc {
+  font-family: var(--terminal);
+  font-size: 22px;
+  color: var(--crt-white);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.intro-paper {
+  margin: 16px 0 28px;
+  padding: 12px 16px;
+  background: var(--crt-dark);
+  border: 2px solid var(--crt-border);
+}
+.intro-paper-title {
+  font-family: var(--terminal);
+  font-size: 20px;
+  color: var(--crt-cyan);
+  text-shadow: 0 0 6px rgba(68, 221, 238, 0.15);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.intro-paper-link {
+  font-family: var(--pixel);
+  font-size: 8px;
+  color: var(--crt-green);
+  text-decoration: none;
+  text-shadow: 0 0 4px var(--crt-green-glow);
+  word-break: break-all;
+}
+.intro-paper-link:hover {
+  color: var(--crt-cyan);
+  text-decoration: underline;
+}
+
+.intro-enter-btn {
+  font-family: var(--pixel);
+  font-size: 12px;
+  padding: 14px 28px;
+  background: var(--crt-dark);
+  color: var(--crt-green);
+  border: 3px solid var(--crt-green-dim);
+  cursor: pointer;
+  text-shadow: 0 0 6px var(--crt-green-glow);
+  letter-spacing: 1px;
+  transition: all 0.15s;
+  display: block;
+  margin: 0 auto;
+}
+.intro-enter-btn:hover {
+  background: var(--crt-green-dim);
+  color: #000;
+  border-color: var(--crt-green);
+  text-shadow: none;
+  box-shadow: 0 0 20px var(--crt-green-glow);
+}
+.intro-enter-btn:active {
+  transform: translate(1px, 1px);
+}
+
+.intro-hint {
+  font-family: var(--pixel);
+  font-size: 7px;
+  color: var(--crt-gray-dim);
+  text-align: center;
+  margin-top: 24px;
+}
+
+/* ─── Share buttons ─── */
+.share-bar {
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--crt-gray-dim);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.share-bar-label {
+  font-family: var(--pixel);
+  font-size: 8px;
+  color: var(--crt-green-dim);
+  letter-spacing: 2px;
+  text-shadow: 0 0 4px var(--crt-green-glow);
+  flex-shrink: 0;
+}
+.share-bar-label::before { content: '> '; }
+.share-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.share-btn {
+  font-family: var(--pixel);
+  font-size: 8px;
+  padding: 7px 12px;
+  background: var(--crt-dark);
+  color: var(--crt-cyan);
+  border: 2px solid var(--crt-border);
+  cursor: pointer;
+  text-shadow: 0 0 4px rgba(68,221,238,0.2);
+  transition: all 0.1s;
+  white-space: nowrap;
+}
+.share-btn:hover {
+  background: var(--crt-border);
+  border-color: var(--crt-cyan-dim);
+}
+.share-btn:active { transform: translate(1px, 1px); }
+.share-btn.x-btn { color: var(--crt-white); }
+.share-btn.x-btn:hover { border-color: var(--crt-white); }
+.share-btn.copy-btn { color: var(--crt-green); }
+.share-btn.copy-btn:hover { border-color: var(--crt-green-dim); }
+.share-btn.dl-btn { color: var(--crt-yellow); }
+.share-btn.dl-btn:hover { border-color: var(--crt-yellow-dim); }
+
+.share-toast {
+  font-family: var(--pixel);
+  font-size: 8px;
+  color: var(--crt-green);
+  text-shadow: 0 0 6px var(--crt-green-glow);
+  min-height: 0;
+  margin-left: 4px;
+}
+
+/* Share card preview (hidden canvas) */
+#share-canvas { display: none; }
+
+/* ─── Responsive ─── */
+@media (max-width: 1100px) {
+  .cell { width: 50px; height: 50px; }
+}
+@media (max-width: 900px) {
+  main { flex-direction: column; }
+  .grid-panel { padding: 8px; }
+  .cell { width: 42px; height: 42px; }
+  .detail-panel {
+    border-left: none;
+    border-top: 2px solid var(--crt-border);
+    max-height: 50vh;
+  }
+}
+</style>
+</head>
+<body>
+
+<canvas id="share-canvas"></canvas>
+
+<div id="loading-screen">
+  <div class="boot-text" id="boot-text"></div>
+  <div id="loading-msg"></div>
+</div>
+
+<div id="intro-screen">
+  <div class="intro-content">
+    <div class="intro-title-line">
+      <span class="intro-icon">&#9608;&#9608;<br>&#9608;&#9608;</span>
+      <h1 class="intro-title">LOGOS-CA<br><span>BIOLOGIST REPORTS</span></h1>
+    </div>
+    <div class="intro-divider"></div>
+    <p class="intro-desc">
+      Here you can read fictitious field reports on imaginary organisms
+      and biomes, all observed and authored by a Large Language Model (LLM).
+    </p>
+    <p class="intro-desc">
+      This project is an extension of the framework proposed in:
+    </p>
+    <div class="intro-paper">
+      <div class="intro-paper-title">LOGOS-CA: A Cellular Automaton Using Natural Language as State and Rule</div>
+      <a class="intro-paper-link" href="https://arxiv.org/abs/2602.00036" target="_blank" rel="noopener">https://arxiv.org/abs/2602.00036</a>
+    </div>
+    <button class="intro-enter-btn" id="intro-enter-btn">&#9654; READ THE REPORTS</button>
+    <div class="intro-hint">K. Utimula, 2026</div>
+  </div>
+</div>
+
+<div id="app">
+  <header>
+    <div class="title-bar">
+      <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+      <h1>LOGOS-CA BIOLOGIST REPORTS <span class="sub">// FIELD REPORT VIEWER v1.0</span></h1>
+    </div>
+    <div class="controls">
+      <div class="step-label" id="step-label">STEP 00/50</div>
+      <div class="slider-wrap">
+        <input type="range" id="step-slider" min="0" max="50" value="0" step="1">
+        <div class="tick-marks" id="tick-marks"></div>
+      </div>
+      <button class="retro-btn" id="play-btn">&#9654; PLAY</button>
+      <button class="retro-btn" id="speed-btn">1x</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid-panel">
+      <div class="field-grid" id="field-grid"></div>
+      <div class="grid-footer">
+        <div class="region-badge"><div class="region-dot" style="background:var(--region1)"></div><span style="color:var(--region1)">R1</span></div>
+        <div class="region-badge"><div class="region-dot" style="background:var(--region2)"></div><span style="color:var(--region2)">R2</span></div>
+        <div class="region-badge"><div class="region-dot" style="background:var(--region3)"></div><span style="color:var(--region3)">R3</span></div>
+        <div class="region-badge"><div class="region-dot" style="background:var(--region4)"></div><span style="color:var(--region4)">R4</span></div>
+        <span style="color:var(--crt-amber)">&#9608; REGION BORDER</span>
+      </div>
+    </div>
+
+    <div class="detail-panel" id="detail-panel">
+      <div class="detail-empty">
+        <div class="msg">AWAITING SELECTION...<span class="cursor-block"></span></div>
+        <div class="hint">HOVER: PREVIEW | CLICK: PIN | ESC: UNPIN</div>
+      </div>
+    </div>
+  </main>
+
+  <div class="status-bar">
+    <span>LOGOS-CA // K.UTIMULA 2026 // GPT-5-MINI // 10x10 GRID // 4 WEAKLY-COUPLED 5x5 REGIONS</span>
+    <a href="https://github.com/A5size/LOGOS-CA" target="_blank" rel="noopener">[ PAPER & CODE ]</a>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  let DATA = null;
+  let currentStep = 0;
+  let pinnedCell = null;
+  let hoveredCell = null;
+  let playing = false;
+  let playTimer = null;
+  const speeds = [1, 2, 4];
+  let speedIdx = 0;
+  let playSpeed = 1;
+
+  const GRID_W = 10, GRID_H = 10;
+
+  function getRegion(r, c) {
+    if (r < 5 && c < 5) return 1;
+    if (r < 5) return 2;
+    if (c < 5) return 3;
+    return 4;
+  }
+  function regionName(n) { return ['','REGION 1','REGION 2','REGION 3','REGION 4'][n]; }
+  function regionBg(n) { return ['','var(--region1)','var(--region2)','var(--region3)','var(--region4)'][n]; }
+  function padStep(n, max) { return 'STEP ' + String(n).padStart(2,'0') + '/' + String(max).padStart(2,'0'); }
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  /* ── Boot ── */
+  async function bootSequence() {
+    const el = document.getElementById('boot-text');
+    const lines = [
+      'LOGOS-CA BIOS v1.0',
+      'Copyright (C) 2026 Utimula Lab',
+      '',
+      'Checking memory............ OK',
+      'Initializing CRT display... OK',
+      'Loading cellular automaton. OK',
+      '',
+    ];
+    for (const line of lines) {
+      el.textContent += line + '\n';
+      await sleep(80);
+    }
+    document.getElementById('loading-msg').textContent = '> LOADING SIMULATION DATA...';
+    await sleep(100);
+    return el;
+  }
+
+  /* ── Grid ── */
+  function buildGrid() {
+    const grid = document.getElementById('field-grid');
+    grid.innerHTML = '';
+    for (let i = 0; i < GRID_H; i++) {
+      for (let j = 0; j < GRID_W; j++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        if (i === 4) cell.classList.add('rb');
+        if (i === 5) cell.classList.add('rt');
+        if (j === 4) cell.classList.add('rr');
+        if (j === 5) cell.classList.add('rl');
+
+        const key = i + ',' + j;
+        const img = document.createElement('img');
+        img.dataset.key = key;
+        img.alt = '';
+        cell.appendChild(img);
+
+        cell.addEventListener('mouseenter', () => { hoveredCell = key; if (!pinnedCell) showDetail(key); });
+        cell.addEventListener('mouseleave', () => { hoveredCell = null; if (!pinnedCell) showEmpty(); });
+        cell.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (pinnedCell === key) { pinnedCell = null; clearPin(); if (hoveredCell) showDetail(hoveredCell); else showEmpty(); }
+          else { pinnedCell = key; clearPin(); cell.classList.add('pinned'); showDetail(key); }
+        });
+        grid.appendChild(cell);
+      }
+    }
+    document.getElementById('detail-panel').addEventListener('click', e => e.stopPropagation());
+    document.addEventListener('click', () => {
+      if (pinnedCell) { pinnedCell = null; clearPin(); if (hoveredCell) showDetail(hoveredCell); else showEmpty(); }
+    });
+  }
+
+  function clearPin() { document.querySelectorAll('.cell.pinned').forEach(c => c.classList.remove('pinned')); }
+
+  function updateGrid() {
+    const step = DATA.steps[currentStep];
+    document.querySelectorAll('.cell img').forEach(img => {
+      const c = step.cells[img.dataset.key];
+      if (c) img.src = 'data:image/png;base64,' + c.i;
+    });
+    clearPin();
+    if (pinnedCell) {
+      const [r, c] = pinnedCell.split(',');
+      const idx = parseInt(r) * GRID_W + parseInt(c);
+      const cells = document.querySelectorAll('.cell');
+      if (cells[idx]) cells[idx].classList.add('pinned');
+    }
+    if (pinnedCell) showDetail(pinnedCell);
+    else if (hoveredCell) showDetail(hoveredCell);
+  }
+
+  /* ── Detail ── */
+  function showEmpty() {
+    document.getElementById('detail-panel').innerHTML =
+      '<div class="detail-empty">' +
+        '<div class="msg">AWAITING SELECTION...<span class="cursor-block"></span></div>' +
+        '<div class="hint">HOVER: PREVIEW | CLICK: PIN | ESC: UNPIN</div>' +
+      '</div>';
+  }
+
+  function showDetail(key) {
+    const cell = DATA.steps[currentStep].cells[key];
+    if (!cell) return;
+    const [r, c] = key.split(',').map(Number);
+    const region = getRegion(r, c);
+    const isPinned = pinnedCell === key;
+    const panel = document.getElementById('detail-panel');
+    panel.innerHTML =
+      '<div class="share-bar">' +
+        '<div class="share-bar-label">REPORT</div>' +
+        '<div class="share-btns">' +
+          '<button class="share-btn x-btn" id="btn-share-x">&#120143; POST TO X</button>' +
+          '<button class="share-btn copy-btn" id="btn-copy-img">&#9633; COPY IMAGE</button>' +
+          '<button class="share-btn dl-btn" id="btn-dl-img">&#8595; DOWNLOAD</button>' +
+        '</div>' +
+        '<div class="share-toast" id="share-toast"></div>' +
+      '</div>' +
+      '<div class="detail-header">' +
+        '<div class="detail-sketch-wrap"><img class="detail-sketch" src="data:image/png;base64,' + cell.i + '"></div>' +
+        '<div class="detail-meta">' +
+          '<div class="detail-cell-id">CELL (' + r + ',' + c + ') // STEP ' + currentStep +
+            ' <span class="region-tag" style="background:' + regionBg(region) + '">' + regionName(region) + '</span></div>' +
+          '<div class="detail-title">' + esc(cell.t) + '</div>' +
+          '<div class="detail-pinned-note">' + (isPinned ? '&#9632; PINNED - CLICK CELL TO UNPIN' : '&#9654; CLICK TO PIN') + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="detail-summary-label">SUMMARY</div>' +
+      '<div class="detail-summary">' + esc(cell.s) + '</div>';
+    panel.scrollTop = 0;
+    bindShareButtons(key);
+  }
+
+  function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  /* ── Controls ── */
+  function setupControls() {
+    const slider = document.getElementById('step-slider');
+    const label = document.getElementById('step-label');
+    const maxStep = DATA.steps.length - 1;
+    slider.max = maxStep;
+
+    const ticks = document.getElementById('tick-marks');
+    for (let s = 0; s <= maxStep; s += 10) {
+      const span = document.createElement('span');
+      span.textContent = s;
+      ticks.appendChild(span);
+    }
+
+    slider.addEventListener('input', () => {
+      currentStep = parseInt(slider.value);
+      label.textContent = padStep(currentStep, maxStep);
+      updateGrid();
+    });
+    document.getElementById('play-btn').addEventListener('click', () => { if (playing) stopPlay(); else startPlay(); });
+    document.getElementById('speed-btn').addEventListener('click', () => {
+      speedIdx = (speedIdx + 1) % speeds.length;
+      playSpeed = speeds[speedIdx];
+      document.getElementById('speed-btn').textContent = playSpeed + 'x';
+      if (playing) { stopPlay(); startPlay(); }
+    });
+  }
+
+  function startPlay() {
+    playing = true;
+    const btn = document.getElementById('play-btn');
+    btn.innerHTML = '&#9646;&#9646; STOP';
+    btn.classList.add('active');
+    const maxStep = DATA.steps.length - 1;
+    playTimer = setInterval(() => {
+      currentStep = currentStep >= maxStep ? 0 : currentStep + 1;
+      document.getElementById('step-slider').value = currentStep;
+      document.getElementById('step-label').textContent = padStep(currentStep, maxStep);
+      updateGrid();
+    }, Math.max(100, 700 / playSpeed));
+  }
+
+  function stopPlay() {
+    playing = false; clearInterval(playTimer);
+    const btn = document.getElementById('play-btn');
+    btn.innerHTML = '&#9654; PLAY';
+    btn.classList.remove('active');
+  }
+
+  /* ── Keyboard ── */
+  document.addEventListener('keydown', (e) => {
+    if (!DATA) return;
+    const maxStep = DATA.steps.length - 1;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault(); if (playing) stopPlay();
+      currentStep = Math.min(currentStep + 1, maxStep);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault(); if (playing) stopPlay();
+      currentStep = Math.max(currentStep - 1, 0);
+    } else if (e.key === ' ') {
+      e.preventDefault(); if (playing) stopPlay(); else startPlay(); return;
+    } else if (e.key === 'Escape') {
+      if (pinnedCell) { pinnedCell = null; clearPin(); if (hoveredCell) showDetail(hoveredCell); else showEmpty(); } return;
+    } else return;
+    document.getElementById('step-slider').value = currentStep;
+    document.getElementById('step-label').textContent = padStep(currentStep, maxStep);
+    updateGrid();
+  });
+
+  /* ── Share card ── */
+  function generateShareCard(key) {
+    const cell = DATA.steps[currentStep].cells[key];
+    if (!cell) return Promise.resolve(null);
+    const [r, c] = key.split(',').map(Number);
+    const region = getRegion(r, c);
+
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        const W = 600, H = 315;
+        const canvas = document.getElementById('share-canvas');
+        canvas.width = W; canvas.height = H;
+        const ctx = canvas.getContext('2d');
+
+        // Background
+        ctx.fillStyle = '#0a0a12';
+        ctx.fillRect(0, 0, W, H);
+
+        // Scanlines
+        ctx.fillStyle = 'rgba(255,255,255,0.015)';
+        for (let y = 0; y < H; y += 4) ctx.fillRect(0, y, W, 2);
+
+        // Border
+        ctx.strokeStyle = '#2a2a4a';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(2, 2, W - 4, H - 4);
+
+        // Sketch area
+        const sketchSize = 160;
+        const sketchX = 24;
+        const sketchY = Math.floor((H - sketchSize) / 2);
+
+        ctx.fillStyle = '#000';
+        ctx.fillRect(sketchX - 4, sketchY - 4, sketchSize + 8, sketchSize + 8);
+        ctx.strokeStyle = '#2a2a4a';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(sketchX - 4, sketchY - 4, sketchSize + 8, sketchSize + 8);
+
+        // Draw pixels from loaded image
+        const tmp = document.createElement('canvas');
+        tmp.width = 16; tmp.height = 16;
+        const tmpCtx = tmp.getContext('2d');
+        tmpCtx.drawImage(img, 0, 0);
+        const idata = tmpCtx.getImageData(0, 0, 16, 16).data;
+        const px = sketchSize / 16;
+        for (let sy = 0; sy < 16; sy++) {
+          for (let sx = 0; sx < 16; sx++) {
+            const idx = (sy * 16 + sx) * 4;
+            ctx.fillStyle = 'rgb(' + idata[idx] + ',' + idata[idx+1] + ',' + idata[idx+2] + ')';
+            ctx.fillRect(sketchX + sx * px, sketchY + sy * px, Math.ceil(px), Math.ceil(px));
+          }
+        }
+
+        // Text area
+        const textX = sketchX + sketchSize + 24;
+        const textW = W - textX - 20;
+
+        // Cell info
+        ctx.font = '12px "Press Start 2P", monospace';
+        ctx.fillStyle = '#555570';
+        ctx.fillText('CELL (' + r + ',' + c + ') // STEP ' + currentStep, textX, 40);
+
+        // Region badge
+        const rColors = ['','#ff6655','#55aaff','#55dd77','#ffcc33'];
+        ctx.fillStyle = rColors[region];
+        const rText = regionName(region);
+        const rMetrics = ctx.measureText(rText);
+        ctx.fillRect(textX, 48, rMetrics.width + 12, 18);
+        ctx.fillStyle = '#000';
+        ctx.font = '10px "Press Start 2P", monospace';
+        ctx.fillText(rText, textX + 6, 61);
+
+        // Title
+        ctx.fillStyle = '#44ddee';
+        ctx.font = '20px "VT323", monospace';
+        ctx.shadowColor = 'rgba(68,221,238,0.3)';
+        ctx.shadowBlur = 6;
+        const titleLines = wrapText(ctx, cell.t, textW);
+        let ty = 88;
+        for (let i = 0; i < Math.min(titleLines.length, 4); i++) {
+          ctx.fillText(titleLines[i], textX, ty);
+          ty += 24;
+        }
+        ctx.shadowBlur = 0;
+
+        // Summary excerpt
+        ctx.fillStyle = '#888899';
+        ctx.font = '16px "VT323", monospace';
+        const maxSummaryY = H - 40;
+        const summaryLines = wrapText(ctx, cell.s, textW);
+        let sy2 = ty + 8;
+        for (let i = 0; i < summaryLines.length && sy2 < maxSummaryY; i++) {
+          ctx.fillText(summaryLines[i], textX, sy2);
+          sy2 += 19;
+        }
+        if (sy2 >= maxSummaryY) ctx.fillText('...', textX, sy2);
+
+        // Footer
+        ctx.fillStyle = '#333348';
+        ctx.font = '10px "Press Start 2P", monospace';
+        ctx.fillText('LOGOS-CA // BIOLOGIST REPORTS', 24, H - 14);
+
+        resolve(canvas);
+      };
+      img.src = 'data:image/png;base64,' + cell.i;
+    });
+  }
+
+  function wrapText(ctx, text, maxWidth) {
+    const words = text.split(/\s+/);
+    const lines = [];
+    let line = '';
+    for (const word of words) {
+      const test = line ? line + ' ' + word : word;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = test;
+      }
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  function getShareText(key) {
+    const cell = DATA.steps[currentStep].cells[key];
+    if (!cell) return '';
+    const [r, c] = key.split(',').map(Number);
+    return cell.t + '\n\n' +
+      'Cell(' + r + ',' + c + ') Step ' + currentStep +
+      ' #LOGOS_CA';
+  }
+
+  function canvasToBlob(canvas) {
+    return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+  }
+
+  async function shareToX(key) {
+    const toast = document.getElementById('share-toast');
+    toast.textContent = 'GENERATING...';
+    const canvas = await generateShareCard(key);
+    if (!canvas) return;
+
+    const text = getShareText(key);
+    const blob = await canvasToBlob(canvas);
+
+    // Try Web Share API first (mobile / supporting browsers)
+    if (navigator.share && navigator.canShare) {
+      const file = new File([blob], 'logos-ca-report.png', { type: 'image/png' });
+      const shareData = { text: text, files: [file] };
+      try {
+        if (navigator.canShare(shareData)) {
+          await navigator.share(shareData);
+          toast.textContent = 'SHARED!';
+          setTimeout(() => { toast.textContent = ''; }, 3000);
+          return;
+        }
+      } catch(e) {
+        if (e.name === 'AbortError') { toast.textContent = ''; return; }
+      }
+    }
+
+    // Fallback: copy image to clipboard, then open X intent
+    try {
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'image/png': blob })
+      ]);
+      toast.textContent = 'IMAGE COPIED! PASTE INTO YOUR POST.';
+    } catch(e) {
+      toast.textContent = 'OPEN X - ATTACH IMAGE MANUALLY';
+    }
+
+    const intentUrl = 'https://x.com/intent/post?text=' + encodeURIComponent(text);
+    window.open(intentUrl, '_blank', 'width=550,height=420');
+    setTimeout(() => { toast.textContent = ''; }, 5000);
+  }
+
+  async function copyImage(key) {
+    const toast = document.getElementById('share-toast');
+    toast.textContent = 'GENERATING...';
+    const canvas = await generateShareCard(key);
+    if (!canvas) return;
+
+    try {
+      const blob = await canvasToBlob(canvas);
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'image/png': blob })
+      ]);
+      toast.textContent = 'IMAGE COPIED TO CLIPBOARD!';
+    } catch(e) {
+      toast.textContent = 'COPY FAILED - USE DOWNLOAD INSTEAD';
+    }
+    setTimeout(() => { toast.textContent = ''; }, 3000);
+  }
+
+  async function downloadImage(key) {
+    const toast = document.getElementById('share-toast');
+    toast.textContent = 'GENERATING...';
+    const canvas = await generateShareCard(key);
+    if (!canvas) return;
+
+    const a = document.createElement('a');
+    a.download = 'logos-ca-step' + currentStep + '-cell' + key.replace(',', '_') + '.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+    toast.textContent = 'DOWNLOADING...';
+    setTimeout(() => { toast.textContent = ''; }, 2000);
+  }
+
+  function bindShareButtons(key) {
+    const xBtn = document.getElementById('btn-share-x');
+    const copyBtn = document.getElementById('btn-copy-img');
+    const dlBtn = document.getElementById('btn-dl-img');
+    if (xBtn) xBtn.addEventListener('click', (e) => { e.stopPropagation(); shareToX(key); });
+    if (copyBtn) copyBtn.addEventListener('click', (e) => { e.stopPropagation(); copyImage(key); });
+    if (dlBtn) dlBtn.addEventListener('click', (e) => { e.stopPropagation(); downloadImage(key); });
+  }
+
+  /* ── Init ── */
+  async function init() {
+    const bootEl = await bootSequence();
+    const msgEl = document.getElementById('loading-msg');
+    try {
+      const resp = await fetch('data.json');
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      bootEl.textContent += 'Fetching data.json... ';
+      await sleep(200);
+      bootEl.textContent += 'OK\n';
+      bootEl.textContent += 'Parsing JSON......... ';
+      DATA = await resp.json();
+      await sleep(150);
+      bootEl.textContent += 'OK\n';
+      bootEl.textContent += 'Building interface... ';
+      buildGrid(); setupControls(); updateGrid();
+      await sleep(150);
+      bootEl.textContent += 'OK\n\n';
+      bootEl.textContent += 'READY.\n';
+      msgEl.textContent = '';
+      await sleep(500);
+
+      // Boot done -> show intro screen
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('intro-screen').classList.add('visible');
+
+      // Intro button -> enter app
+      document.getElementById('intro-enter-btn').addEventListener('click', () => {
+        document.getElementById('intro-screen').classList.add('hidden');
+        setTimeout(() => {
+          document.getElementById('intro-screen').style.display = 'none';
+          document.getElementById('app').classList.add('ready');
+        }, 600);
+      });
+
+    } catch (err) {
+      bootEl.textContent += 'FAIL\n\nERROR: ' + err.message + '\n';
+      msgEl.textContent = 'Make sure data.json is in the same directory.';
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
