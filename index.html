@@ -194,10 +194,22 @@ input[type=range]::-moz-range-thumb {
 }
 
 .tick-marks {
-  display: flex; justify-content: space-between;
-  padding: 3px 2px 0;
+  position: relative;
+  height: 14px;
+  margin-top: 3px;
   font-family: var(--pixel);
   font-size: 7px; color: var(--crt-gray);
+}
+.tick-marks span {
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.step-nav-btn {
+  padding: 6px 8px;
+  font-size: 10px;
+  flex-shrink: 0;
 }
 
 .retro-btn {
@@ -651,6 +663,7 @@ main { flex: 1; display: flex; overflow: hidden; }
   .controls { gap: 8px; }
   .step-label { font-size: 8px; min-width: 90px; }
   .retro-btn { font-size: 7px; padding: 5px 10px; }
+  .step-nav-btn { padding: 5px 6px; font-size: 8px; }
 }
 @media (max-width: 500px) {
   .field-grid { gap: 1px; padding: 2px; border-width: 2px; }
@@ -729,10 +742,12 @@ main { flex: 1; display: flex; overflow: hidden; }
     </div>
     <div class="controls">
       <div class="step-label" id="step-label">STEP 00/00</div>
+      <button class="retro-btn step-nav-btn" id="prev-btn">&#9664;</button>
       <div class="slider-wrap">
         <input type="range" id="step-slider" min="0" max="0" value="0" step="1">
         <div class="tick-marks" id="tick-marks"></div>
       </div>
+      <button class="retro-btn step-nav-btn" id="next-btn">&#9654;</button>
       <button class="retro-btn" id="play-btn">&#9654; PLAY</button>
       <button class="retro-btn" id="speed-btn">1x</button>
     </div>
@@ -1075,6 +1090,15 @@ main { flex: 1; display: flex; overflow: hidden; }
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
   /* ──────────────── Controls ──────────────── */
+  function goToStep(step) {
+    var maxStep = DATA.steps.length - 1;
+    currentStep = Math.max(0, Math.min(step, maxStep));
+    if (playing) stopPlay();
+    document.getElementById('step-slider').value = currentStep;
+    document.getElementById('step-label').textContent = padStep(currentStep, maxStep);
+    updateGrid();
+  }
+
   function setupControls() {
     var slider = document.getElementById('step-slider');
     var label = document.getElementById('step-label');
@@ -1083,12 +1107,28 @@ main { flex: 1; display: flex; overflow: hidden; }
     slider.value = 0;
     label.textContent = padStep(0, maxStep);
 
+    // Build tick marks at proportional positions
     var ticks = document.getElementById('tick-marks');
     ticks.innerHTML = '';
-    var tickInterval = maxStep <= 20 ? 5 : 10;
-    for (var s = 0; s <= maxStep; s += tickInterval) {
+    if (maxStep > 0) {
+      var tickInterval = maxStep <= 10 ? 5 : maxStep <= 30 ? 5 : 10;
+      var tickValues = [];
+      for (var s = 0; s <= maxStep; s += tickInterval) tickValues.push(s);
+      // Always include the last step if not already present
+      if (tickValues[tickValues.length - 1] !== maxStep) tickValues.push(maxStep);
+
+      for (var t = 0; t < tickValues.length; t++) {
+        var val = tickValues[t];
+        var pct = (val / maxStep) * 100;
+        var span = document.createElement('span');
+        span.textContent = val;
+        span.style.left = pct + '%';
+        ticks.appendChild(span);
+      }
+    } else {
       var span = document.createElement('span');
-      span.textContent = s;
+      span.textContent = '0';
+      span.style.left = '0%';
       ticks.appendChild(span);
     }
 
@@ -1101,6 +1141,17 @@ main { flex: 1; display: flex; overflow: hidden; }
       label.textContent = padStep(currentStep, maxStep);
       updateGrid();
     });
+
+    /* Prev / Next buttons */
+    var prevBtn = document.getElementById('prev-btn');
+    var newPrev = prevBtn.cloneNode(true);
+    prevBtn.parentNode.replaceChild(newPrev, prevBtn);
+    newPrev.addEventListener('click', function() { goToStep(currentStep - 1); });
+
+    var nextBtn = document.getElementById('next-btn');
+    var newNext = nextBtn.cloneNode(true);
+    nextBtn.parentNode.replaceChild(newNext, nextBtn);
+    newNext.addEventListener('click', function() { goToStep(currentStep + 1); });
 
     var playBtn = document.getElementById('play-btn');
     var newPlay = playBtn.cloneNode(true);
@@ -1141,15 +1192,10 @@ main { flex: 1; display: flex; overflow: hidden; }
   /* ──────────────── Keyboard ──────────────── */
   document.addEventListener('keydown', function(e) {
     if (!DATA) return;
-    var maxStep = DATA.steps.length - 1;
-    if (e.key==='ArrowRight'||e.key==='ArrowUp') { e.preventDefault(); if(playing)stopPlay(); currentStep=Math.min(currentStep+1,maxStep); }
-    else if (e.key==='ArrowLeft'||e.key==='ArrowDown') { e.preventDefault(); if(playing)stopPlay(); currentStep=Math.max(currentStep-1,0); }
-    else if (e.key===' ') { e.preventDefault(); if(playing)stopPlay();else startPlay(); return; }
-    else if (e.key==='Escape') { if(pinnedCell){pinnedCell=null;clearPin();if(hoveredCell)showDetail(hoveredCell);else showEmpty();} return; }
-    else return;
-    document.getElementById('step-slider').value = currentStep;
-    document.getElementById('step-label').textContent = padStep(currentStep, maxStep);
-    updateGrid();
+    if (e.key==='ArrowRight'||e.key==='ArrowUp') { e.preventDefault(); goToStep(currentStep+1); }
+    else if (e.key==='ArrowLeft'||e.key==='ArrowDown') { e.preventDefault(); goToStep(currentStep-1); }
+    else if (e.key===' ') { e.preventDefault(); if(playing)stopPlay();else startPlay(); }
+    else if (e.key==='Escape') { if(pinnedCell){pinnedCell=null;clearPin();if(hoveredCell)showDetail(hoveredCell);else showEmpty();} }
   });
 
   /* ──────────────── Share card ──────────────── */
