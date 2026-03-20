@@ -118,12 +118,35 @@ header {
 .title-bar .dot.y { background: var(--crt-yellow); border-color: #aa8811; }
 .title-bar .dot.g { background: var(--crt-green); border-color: #11aa33; }
 
+.back-btn {
+  font-family: var(--pixel);
+  font-size: 7px;
+  padding: 4px 10px;
+  background: var(--crt-dark);
+  color: var(--crt-amber);
+  border: 2px solid var(--crt-gray-dim);
+  cursor: pointer;
+  transition: all 0.1s;
+  white-space: nowrap;
+}
+.back-btn:hover {
+  background: var(--crt-border);
+  border-color: var(--crt-amber);
+  color: var(--crt-yellow);
+}
+.back-btn:active { transform: translate(1px, 1px); }
+
 header h1 {
   font-family: var(--pixel);
   font-size: 11px;
   color: var(--crt-cyan);
   text-shadow: 0 0 10px rgba(68, 221, 238, 0.3);
   letter-spacing: 1px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 header h1 .sub {
   color: var(--crt-gray);
@@ -213,7 +236,6 @@ main { flex: 1; display: flex; overflow: hidden; }
 
 .field-grid {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
   gap: 2px; padding: 4px;
   background: var(--crt-dark);
   border: 3px solid var(--crt-border);
@@ -221,7 +243,6 @@ main { flex: 1; display: flex; overflow: hidden; }
 }
 
 .cell {
-  width: 60px; height: 60px;
   cursor: pointer;
   image-rendering: pixelated;
   transition: box-shadow 0.08s;
@@ -397,150 +418,203 @@ main { flex: 1; display: flex; overflow: hidden; }
   max-width: 560px;
   padding: 0 24px;
 }
-
 .intro-title-line {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 20px;
+  display: flex; align-items: center;
+  gap: 16px; margin-bottom: 20px;
 }
 .intro-icon {
   font-family: var(--pixel);
-  font-size: 10px;
-  color: var(--crt-green);
+  font-size: 10px; color: var(--crt-green);
   line-height: 1.1;
   text-shadow: 0 0 8px var(--crt-green-glow);
   letter-spacing: 2px;
 }
 .intro-title {
   font-family: var(--pixel);
-  font-size: 16px;
-  color: var(--crt-cyan);
+  font-size: 16px; color: var(--crt-cyan);
   text-shadow: 0 0 12px rgba(68, 221, 238, 0.3);
-  letter-spacing: 2px;
-  line-height: 1.6;
+  letter-spacing: 2px; line-height: 1.6;
 }
-.intro-title span {
-  font-size: 10px;
-  color: var(--crt-gray);
-  letter-spacing: 3px;
-}
-
+.intro-title span { font-size: 10px; color: var(--crt-gray); letter-spacing: 3px; }
 .intro-divider {
-  height: 2px;
-  background: var(--crt-border);
+  height: 2px; background: var(--crt-border);
   margin-bottom: 24px;
   box-shadow: 0 0 6px rgba(42, 42, 74, 0.5);
 }
-
 .intro-desc {
   font-family: var(--terminal);
-  font-size: 22px;
-  color: var(--crt-white);
-  line-height: 1.5;
-  margin-bottom: 14px;
+  font-size: 22px; color: var(--crt-white);
+  line-height: 1.5; margin-bottom: 14px;
 }
-
 .intro-paper {
-  margin: 16px 0 28px;
-  padding: 12px 16px;
+  margin: 16px 0 28px; padding: 12px 16px;
   background: var(--crt-dark);
   border: 2px solid var(--crt-border);
 }
 .intro-paper-title {
   font-family: var(--terminal);
-  font-size: 20px;
-  color: var(--crt-cyan);
+  font-size: 20px; color: var(--crt-cyan);
   text-shadow: 0 0 6px rgba(68, 221, 238, 0.15);
-  margin-bottom: 6px;
-  line-height: 1.4;
+  margin-bottom: 6px; line-height: 1.4;
 }
 .intro-paper-link {
   font-family: var(--pixel);
-  font-size: 8px;
-  color: var(--crt-green);
+  font-size: 8px; color: var(--crt-green);
   text-decoration: none;
   text-shadow: 0 0 4px var(--crt-green-glow);
   word-break: break-all;
 }
-.intro-paper-link:hover {
-  color: var(--crt-cyan);
-  text-decoration: underline;
-}
-
+.intro-paper-link:hover { color: var(--crt-cyan); text-decoration: underline; }
 .intro-enter-btn {
   font-family: var(--pixel);
-  font-size: 12px;
-  padding: 14px 28px;
-  background: var(--crt-dark);
-  color: var(--crt-green);
+  font-size: 12px; padding: 14px 28px;
+  background: var(--crt-dark); color: var(--crt-green);
   border: 3px solid var(--crt-green-dim);
   cursor: pointer;
   text-shadow: 0 0 6px var(--crt-green-glow);
-  letter-spacing: 1px;
-  transition: all 0.15s;
-  display: block;
-  margin: 0 auto;
+  letter-spacing: 1px; transition: all 0.15s;
+  display: block; margin: 0 auto;
 }
 .intro-enter-btn:hover {
-  background: var(--crt-green-dim);
-  color: #000;
-  border-color: var(--crt-green);
-  text-shadow: none;
+  background: var(--crt-green-dim); color: #000;
+  border-color: var(--crt-green); text-shadow: none;
   box-shadow: 0 0 20px var(--crt-green-glow);
 }
-.intro-enter-btn:active {
-  transform: translate(1px, 1px);
-}
-
+.intro-enter-btn:active { transform: translate(1px, 1px); }
 .intro-hint {
   font-family: var(--pixel);
-  font-size: 7px;
-  color: var(--crt-gray-dim);
-  text-align: center;
-  margin-top: 24px;
+  font-size: 7px; color: var(--crt-gray-dim);
+  text-align: center; margin-top: 24px;
+}
+
+/* ─── Experiment selection screen ─── */
+#exp-screen {
+  position: fixed; inset: 0;
+  background: var(--crt-bg);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  z-index: 7000;
+  transition: opacity 0.6s ease;
+  overflow-y: auto;
+  padding: 30px 0;
+}
+#exp-screen.visible { display: flex; }
+#exp-screen.hidden { opacity: 0; pointer-events: none; }
+
+.exp-wrapper {
+  width: 100%; max-width: 720px;
+  padding: 0 24px;
+}
+.exp-header {
+  display: flex; align-items: center;
+  gap: 12px; margin-bottom: 8px;
+}
+.exp-header-icon {
+  font-family: var(--pixel);
+  font-size: 14px; color: var(--crt-amber);
+  text-shadow: 0 0 8px rgba(255, 170, 34, 0.2);
+}
+.exp-header-title {
+  font-family: var(--pixel);
+  font-size: 13px; color: var(--crt-cyan);
+  text-shadow: 0 0 10px rgba(68, 221, 238, 0.3);
+  letter-spacing: 2px;
+}
+.exp-header-sub {
+  font-family: var(--pixel);
+  font-size: 8px; color: var(--crt-gray);
+  margin-bottom: 20px;
+}
+.exp-divider {
+  height: 2px; background: var(--crt-border);
+  margin-bottom: 16px;
+  box-shadow: 0 0 6px rgba(42, 42, 74, 0.5);
+}
+.exp-list {
+  display: flex; flex-direction: column;
+  gap: 6px;
+}
+.exp-item {
+  padding: 14px 16px;
+  background: var(--crt-dark);
+  border: 2px solid var(--crt-border);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.exp-item:hover {
+  border-color: var(--crt-cyan-dim);
+  background: var(--crt-panel);
+  box-shadow: 0 0 12px rgba(68, 221, 238, 0.08);
+}
+.exp-item:active { transform: translate(1px, 1px); }
+.exp-item-top {
+  display: flex; align-items: center;
+  gap: 12px; margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.exp-id {
+  font-family: var(--pixel);
+  font-size: 11px; color: var(--crt-green);
+  text-shadow: 0 0 6px var(--crt-green-glow);
+  flex-shrink: 0;
+}
+.exp-stats {
+  display: flex; gap: 10px;
+  font-family: var(--pixel);
+  font-size: 7px; color: var(--crt-gray);
+  flex-wrap: wrap;
+}
+.exp-stat { white-space: nowrap; }
+.exp-stat-val { color: var(--crt-yellow); }
+.exp-desc-text {
+  font-family: var(--terminal);
+  font-size: 18px; color: var(--crt-white);
+  line-height: 1.4;
+}
+.exp-loading {
+  font-family: var(--pixel);
+  font-size: 9px; color: var(--crt-cyan);
+  text-align: center; padding: 40px 0;
+  text-shadow: 0 0 6px rgba(68, 221, 238, 0.3);
+}
+.exp-error {
+  font-family: var(--pixel);
+  font-size: 9px; color: var(--crt-red);
+  text-align: center; padding: 40px 0;
+}
+.exp-footer-hint {
+  font-family: var(--pixel);
+  font-size: 7px; color: var(--crt-gray-dim);
+  text-align: center; margin-top: 24px;
 }
 
 /* ─── Share buttons ─── */
 .share-bar {
-  margin-bottom: 10px;
-  padding-bottom: 8px;
+  margin-bottom: 10px; padding-bottom: 8px;
   border-bottom: 1px dashed var(--crt-gray-dim);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  display: flex; align-items: center;
+  gap: 12px; flex-wrap: wrap;
 }
 .share-bar-label {
   font-family: var(--pixel);
-  font-size: 8px;
-  color: var(--crt-green-dim);
+  font-size: 8px; color: var(--crt-green-dim);
   letter-spacing: 2px;
   text-shadow: 0 0 4px var(--crt-green-glow);
   flex-shrink: 0;
 }
 .share-bar-label::before { content: '> '; }
-.share-btns {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
+.share-btns { display: flex; gap: 8px; flex-wrap: wrap; }
 .share-btn {
   font-family: var(--pixel);
-  font-size: 8px;
-  padding: 7px 12px;
-  background: var(--crt-dark);
-  color: var(--crt-cyan);
+  font-size: 8px; padding: 7px 12px;
+  background: var(--crt-dark); color: var(--crt-cyan);
   border: 2px solid var(--crt-border);
   cursor: pointer;
   text-shadow: 0 0 4px rgba(68,221,238,0.2);
-  transition: all 0.1s;
-  white-space: nowrap;
+  transition: all 0.1s; white-space: nowrap;
 }
-.share-btn:hover {
-  background: var(--crt-border);
-  border-color: var(--crt-cyan-dim);
-}
+.share-btn:hover { background: var(--crt-border); border-color: var(--crt-cyan-dim); }
 .share-btn:active { transform: translate(1px, 1px); }
 .share-btn.x-btn { color: var(--crt-white); }
 .share-btn.x-btn:hover { border-color: var(--crt-white); }
@@ -548,41 +622,24 @@ main { flex: 1; display: flex; overflow: hidden; }
 .share-btn.copy-btn:hover { border-color: var(--crt-green-dim); }
 .share-btn.dl-btn { color: var(--crt-yellow); }
 .share-btn.dl-btn:hover { border-color: var(--crt-yellow-dim); }
-
 .share-toast {
   font-family: var(--pixel);
-  font-size: 8px;
-  color: var(--crt-green);
+  font-size: 8px; color: var(--crt-green);
   text-shadow: 0 0 6px var(--crt-green-glow);
-  min-height: 0;
-  margin-left: 4px;
+  min-height: 0; margin-left: 4px;
 }
-
-/* Share card preview (hidden canvas) */
 #share-canvas { display: none; }
 
 /* ─── Responsive ─── */
-@media (max-width: 1100px) {
-  .cell { width: 50px; height: 50px; }
-}
 @media (max-width: 900px) {
   body { overflow: auto; }
   #app { height: auto; min-height: 100vh; }
-  main {
-    flex-direction: column;
-    overflow: visible;
-  }
-  .grid-panel {
-    padding: 8px;
-    flex-shrink: 0;
-  }
-  .cell { width: 42px; height: 42px; }
+  main { flex-direction: column; overflow: visible; }
+  .grid-panel { padding: 8px; flex-shrink: 0; }
   .detail-panel {
     border-left: none;
     border-top: 2px solid var(--crt-border);
-    overflow-y: visible;
-    min-height: 50vh;
-    padding: 16px;
+    overflow-y: visible; min-height: 50vh; padding: 16px;
   }
   .detail-sketch { width: 96px; height: 96px; }
   .detail-title { font-size: 20px; }
@@ -596,7 +653,6 @@ main { flex: 1; display: flex; overflow: hidden; }
   .retro-btn { font-size: 7px; padding: 5px 10px; }
 }
 @media (max-width: 500px) {
-  .cell { width: 30px; height: 30px; }
   .field-grid { gap: 1px; padding: 2px; border-width: 2px; }
   .grid-panel { padding: 4px; }
   .detail-header { flex-direction: column; align-items: center; text-align: center; }
@@ -607,6 +663,9 @@ main { flex: 1; display: flex; overflow: hidden; }
   .intro-title span { font-size: 8px; }
   .intro-desc { font-size: 18px; }
   .intro-enter-btn { font-size: 10px; padding: 12px 20px; }
+  .exp-header-title { font-size: 10px; }
+  .exp-id { font-size: 9px; }
+  .exp-desc-text { font-size: 16px; }
 }
 </style>
 </head>
@@ -614,11 +673,13 @@ main { flex: 1; display: flex; overflow: hidden; }
 
 <canvas id="share-canvas"></canvas>
 
+<!-- ─── Boot ─── -->
 <div id="loading-screen">
   <div class="boot-text" id="boot-text"></div>
   <div id="loading-msg"></div>
 </div>
 
+<!-- ─── Intro ─── -->
 <div id="intro-screen">
   <div class="intro-content">
     <div class="intro-title-line">
@@ -642,16 +703,34 @@ main { flex: 1; display: flex; overflow: hidden; }
   </div>
 </div>
 
+<!-- ─── Experiment selection ─── -->
+<div id="exp-screen">
+  <div class="exp-wrapper">
+    <div class="exp-header">
+      <span class="exp-header-icon">&#9776;</span>
+      <span class="exp-header-title">EXPERIMENT LOG</span>
+    </div>
+    <div class="exp-header-sub">SELECT AN EXPERIMENT TO VIEW</div>
+    <div class="exp-divider"></div>
+    <div class="exp-list" id="exp-list">
+      <div class="exp-loading">LOADING MANIFEST...</div>
+    </div>
+    <div class="exp-footer-hint">K. Utimula, 2026 // LOGOS-CA</div>
+  </div>
+</div>
+
+<!-- ─── App ─── -->
 <div id="app">
   <header>
     <div class="title-bar">
       <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-      <h1>LOGOS-CA BIOLOGIST REPORTS <span class="sub">// FIELD REPORT VIEWER v1.0</span></h1>
+      <button class="back-btn" id="back-btn">&#9664; EXP</button>
+      <h1 id="app-title">LOGOS-CA BIOLOGIST REPORTS <span class="sub">// FIELD REPORT VIEWER v1.0</span></h1>
     </div>
     <div class="controls">
-      <div class="step-label" id="step-label">STEP 00/50</div>
+      <div class="step-label" id="step-label">STEP 00/00</div>
       <div class="slider-wrap">
-        <input type="range" id="step-slider" min="0" max="50" value="0" step="1">
+        <input type="range" id="step-slider" min="0" max="0" value="0" step="1">
         <div class="tick-marks" id="tick-marks"></div>
       </div>
       <button class="retro-btn" id="play-btn">&#9654; PLAY</button>
@@ -662,15 +741,8 @@ main { flex: 1; display: flex; overflow: hidden; }
   <main>
     <div class="grid-panel">
       <div class="field-grid" id="field-grid"></div>
-      <div class="grid-footer">
-        <div class="region-badge"><div class="region-dot" style="background:var(--region1)"></div><span style="color:var(--region1)">R1</span></div>
-        <div class="region-badge"><div class="region-dot" style="background:var(--region2)"></div><span style="color:var(--region2)">R2</span></div>
-        <div class="region-badge"><div class="region-dot" style="background:var(--region3)"></div><span style="color:var(--region3)">R3</span></div>
-        <div class="region-badge"><div class="region-dot" style="background:var(--region4)"></div><span style="color:var(--region4)">R4</span></div>
-        <span style="color:var(--crt-amber)">&#9608; REGION BORDER</span>
-      </div>
+      <div class="grid-footer" id="grid-footer"></div>
     </div>
-
     <div class="detail-panel" id="detail-panel">
       <div class="detail-empty">
         <div class="msg">AWAITING SELECTION...<span class="cursor-block"></span></div>
@@ -680,8 +752,8 @@ main { flex: 1; display: flex; overflow: hidden; }
   </main>
 
   <div class="status-bar">
-    <span>LOGOS-CA // K.UTIMULA 2026 // GPT-5-MINI // 10x10 GRID // 4 WEAKLY-COUPLED 5x5 REGIONS</span>
-    <a href="https://github.com/A5size/LOGOS-CA" target="_blank" rel="noopener">[ PAPER & CODE ]</a>
+    <span id="status-text">LOGOS-CA // K.UTIMULA 2026</span>
+    <a href="https://github.com/A5size/LOGOS-CA" target="_blank" rel="noopener">[ PAPER &amp; CODE ]</a>
   </div>
 </div>
 
@@ -690,6 +762,7 @@ main { flex: 1; display: flex; overflow: hidden; }
   'use strict';
 
   let DATA = null;
+  let MANIFEST = null;
   let currentStep = 0;
   let pinnedCell = null;
   let hoveredCell = null;
@@ -699,9 +772,14 @@ main { flex: 1; display: flex; overflow: hidden; }
   let speedIdx = 0;
   let playSpeed = 1;
 
-  const GRID_W = 10, GRID_H = 10;
+  /* ── Grid config (set when experiment loads) ── */
+  let GRID_W = 10;
+  let GRID_H = 10;
+  let HAS_REGIONS = false;
+  let SKETCH_DIM = 16;
 
   function getRegion(r, c) {
+    if (!HAS_REGIONS) return 0;
     if (r < 5 && c < 5) return 1;
     if (r < 5) return 2;
     if (c < 5) return 3;
@@ -712,7 +790,39 @@ main { flex: 1; display: flex; overflow: hidden; }
   function padStep(n, max) { return 'STEP ' + String(n).padStart(2,'0') + '/' + String(max).padStart(2,'0'); }
   function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-  /* ── Boot ── */
+  function cellSize() {
+    var dim = Math.max(GRID_W, GRID_H);
+    if (dim <= 10) return 60;
+    if (dim <= 12) return 52;
+    if (dim <= 16) return 40;
+    return Math.max(24, Math.floor(600 / dim));
+  }
+  function cellSizeMobile() {
+    var dim = Math.max(GRID_W, GRID_H);
+    if (dim <= 10) return 42;
+    if (dim <= 12) return 36;
+    return Math.max(20, Math.floor(420 / dim));
+  }
+  function cellSizeSmall() {
+    var dim = Math.max(GRID_W, GRID_H);
+    if (dim <= 10) return 30;
+    if (dim <= 12) return 26;
+    return Math.max(16, Math.floor(320 / dim));
+  }
+  function applyCellSizes() {
+    var id = 'dynamic-cell-style';
+    var existing = document.getElementById(id);
+    if (existing) existing.remove();
+    var style = document.createElement('style');
+    style.id = id;
+    style.textContent =
+      '.cell{width:' + cellSize() + 'px;height:' + cellSize() + 'px}' +
+      '@media(max-width:900px){.cell{width:' + cellSizeMobile() + 'px;height:' + cellSizeMobile() + 'px}}' +
+      '@media(max-width:500px){.cell{width:' + cellSizeSmall() + 'px;height:' + cellSizeSmall() + 'px}}';
+    document.head.appendChild(style);
+  }
+
+  /* ──────────────── Boot ──────────────── */
   async function bootSequence() {
     const el = document.getElementById('boot-text');
     const lines = [
@@ -724,451 +834,579 @@ main { flex: 1; display: flex; overflow: hidden; }
       'Loading cellular automaton. OK',
       '',
     ];
-    for (const line of lines) {
-      el.textContent += line + '\n';
-      await sleep(80);
-    }
-    document.getElementById('loading-msg').textContent = '> LOADING SIMULATION DATA...';
+    for (const line of lines) { el.textContent += line + '\n'; await sleep(80); }
+    document.getElementById('loading-msg').textContent = '> LOADING EXPERIMENT MANIFEST...';
     await sleep(100);
     return el;
   }
 
-  /* ── Grid ── */
-  function buildGrid() {
-    const grid = document.getElementById('field-grid');
-    grid.innerHTML = '';
-    for (let i = 0; i < GRID_H; i++) {
-      for (let j = 0; j < GRID_W; j++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        if (i === 4) cell.classList.add('rb');
-        if (i === 5) cell.classList.add('rt');
-        if (j === 4) cell.classList.add('rr');
-        if (j === 5) cell.classList.add('rl');
+  /* ──────────────── Experiment list ──────────────── */
+  function buildExpList() {
+    const list = document.getElementById('exp-list');
+    list.innerHTML = '';
 
-        const key = i + ',' + j;
-        const img = document.createElement('img');
+    if (!MANIFEST || MANIFEST.length === 0) {
+      list.innerHTML = '<div class="exp-error">NO EXPERIMENTS FOUND.<br>Make sure experiments.json exists.</div>';
+      return;
+    }
+
+    MANIFEST.forEach(function(exp) {
+      var item = document.createElement('div');
+      item.className = 'exp-item';
+      item.innerHTML =
+        '<div class="exp-item-top">' +
+          '<span class="exp-id">EXP ' + esc(exp.id) + '</span>' +
+          '<div class="exp-stats">' +
+            '<span class="exp-stat"><span class="exp-stat-val">' + exp.grid_w + 'x' + exp.grid_h + '</span> GRID</span>' +
+            '<span class="exp-stat"><span class="exp-stat-val">' + esc(String(exp.model || '?').toUpperCase()) + '</span></span>' +
+            '<span class="exp-stat"><span class="exp-stat-val">' + exp.steps + '</span> STEPS</span>' +
+            '<span class="exp-stat"><span class="exp-stat-val">' + (exp.sketch_size || '?') + 'px</span> SKETCH</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="exp-desc-text">' + esc(exp.desc) + '</div>';
+
+      item.addEventListener('click', function() { loadExperiment(exp); });
+      list.appendChild(item);
+    });
+  }
+
+  async function loadExperiment(exp) {
+    var list = document.getElementById('exp-list');
+    list.innerHTML = '<div class="exp-loading">LOADING EXP ' + esc(exp.id) + '...</div>';
+
+    try {
+      var resp = await fetch(exp.file);
+      if (!resp.ok) throw new Error('HTTP ' + resp.status + ' for ' + exp.file);
+      DATA = await resp.json();
+
+      /* Set grid config from loaded data */
+      GRID_W = DATA.metadata.grid_size_x || exp.grid_w || 10;
+      GRID_H = DATA.metadata.grid_size_y || exp.grid_h || 10;
+      HAS_REGIONS = (GRID_W === 10 && GRID_H === 10);
+      SKETCH_DIM = DATA.metadata.sketch_size || exp.sketch_size || 16;
+
+      /* Reset state */
+      currentStep = 0;
+      pinnedCell = null;
+      hoveredCell = null;
+      if (playing) stopPlay();
+
+      /* Build UI */
+      applyCellSizes();
+      buildGrid();
+      buildGridFooter();
+      buildStatusText();
+      setupControls();
+      updateGrid();
+
+      /* Update title */
+      document.getElementById('app-title').innerHTML =
+        'EXP ' + esc(exp.id) + ' <span class="sub">// ' + esc(exp.desc.substring(0, 80)) + '</span>';
+
+      /* Transition: exp screen -> app */
+      document.getElementById('exp-screen').classList.add('hidden');
+      setTimeout(function() {
+        document.getElementById('exp-screen').classList.remove('visible');
+        document.getElementById('exp-screen').classList.remove('hidden');
+        document.getElementById('app').classList.add('ready');
+      }, 600);
+
+    } catch (err) {
+      list.innerHTML = '<div class="exp-error">LOAD FAILED: ' + esc(err.message) +
+        '</div><div class="exp-footer-hint" style="margin-top:16px;cursor:pointer;color:var(--crt-cyan)" ' +
+        'onclick="document.getElementById(\'exp-list\').innerHTML=\'\';' +
+        'window.dispatchEvent(new CustomEvent(\'rebuild-exp-list\'))">&#9664; BACK TO LIST</div>';
+    }
+  }
+
+  function showExpScreen() {
+    /* Hide app, show experiment list */
+    if (playing) stopPlay();
+    document.getElementById('app').classList.remove('ready');
+    buildExpList();
+    document.getElementById('exp-screen').classList.add('visible');
+  }
+
+  /* ──────────────── Grid ──────────────── */
+  function buildGrid() {
+    var grid = document.getElementById('field-grid');
+    grid.innerHTML = '';
+    grid.style.gridTemplateColumns = 'repeat(' + GRID_W + ', 1fr)';
+
+    for (var i = 0; i < GRID_H; i++) {
+      for (var j = 0; j < GRID_W; j++) {
+        var cell = document.createElement('div');
+        cell.className = 'cell';
+        if (HAS_REGIONS) {
+          if (i === 4) cell.classList.add('rb');
+          if (i === 5) cell.classList.add('rt');
+          if (j === 4) cell.classList.add('rr');
+          if (j === 5) cell.classList.add('rl');
+        }
+        var key = i + ',' + j;
+        var img = document.createElement('img');
         img.dataset.key = key;
         img.alt = '';
         cell.appendChild(img);
 
-        cell.addEventListener('mouseenter', () => { hoveredCell = key; if (!pinnedCell) showDetail(key); });
-        cell.addEventListener('mouseleave', () => { hoveredCell = null; if (!pinnedCell) showEmpty(); });
-        cell.addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (pinnedCell === key) { pinnedCell = null; clearPin(); if (hoveredCell) showDetail(hoveredCell); else showEmpty(); }
-          else {
-            pinnedCell = key; clearPin(); cell.classList.add('pinned'); showDetail(key);
-            scrollToDetail();
-          }
-        });
+        (function(k, el) {
+          el.addEventListener('mouseenter', function() { hoveredCell = k; if (!pinnedCell) showDetail(k); });
+          el.addEventListener('mouseleave', function() { hoveredCell = null; if (!pinnedCell) showEmpty(); });
+          el.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (pinnedCell === k) { pinnedCell = null; clearPin(); if (hoveredCell) showDetail(hoveredCell); else showEmpty(); }
+            else { pinnedCell = k; clearPin(); el.classList.add('pinned'); showDetail(k); scrollToDetail(); }
+          });
+        })(key, cell);
+
         grid.appendChild(cell);
       }
     }
-    document.getElementById('detail-panel').addEventListener('click', e => e.stopPropagation());
-    document.addEventListener('click', () => {
+    document.getElementById('detail-panel').onclick = function(e) { e.stopPropagation(); };
+    document.onclick = function() {
       if (pinnedCell) { pinnedCell = null; clearPin(); if (hoveredCell) showDetail(hoveredCell); else showEmpty(); }
-    });
+    };
   }
 
-  function clearPin() { document.querySelectorAll('.cell.pinned').forEach(c => c.classList.remove('pinned')); }
+  function buildGridFooter() {
+    var footer = document.getElementById('grid-footer');
+    footer.innerHTML = '';
+    if (!HAS_REGIONS) return;
+    var badges = [
+      {c:'var(--region1)',l:'R1'},{c:'var(--region2)',l:'R2'},
+      {c:'var(--region3)',l:'R3'},{c:'var(--region4)',l:'R4'},
+    ];
+    badges.forEach(function(b) {
+      var badge = document.createElement('div');
+      badge.className = 'region-badge';
+      badge.innerHTML = '<div class="region-dot" style="background:'+b.c+'"></div><span style="color:'+b.c+'">'+b.l+'</span>';
+      footer.appendChild(badge);
+    });
+    var lbl = document.createElement('span');
+    lbl.style.color = 'var(--crt-amber)';
+    lbl.innerHTML = '&#9608; REGION BORDER';
+    footer.appendChild(lbl);
+  }
+
+  function buildStatusText() {
+    var m = DATA.metadata;
+    var parts = ['LOGOS-CA', 'K.UTIMULA 2026', (m.model||'LLM').toUpperCase(),
+                 m.grid_size_x+'x'+m.grid_size_y+' GRID', SKETCH_DIM+'px SKETCH'];
+    if (HAS_REGIONS) parts.push('4 WEAKLY-COUPLED 5x5 REGIONS');
+    document.getElementById('status-text').textContent = parts.join(' // ');
+  }
+
+  function clearPin() { document.querySelectorAll('.cell.pinned').forEach(function(c){c.classList.remove('pinned');}); }
 
   function scrollToDetail() {
     if (window.innerWidth <= 900) {
-      setTimeout(() => {
-        document.getElementById('detail-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 50);
+      setTimeout(function(){ document.getElementById('detail-panel').scrollIntoView({behavior:'smooth',block:'start'}); }, 50);
     }
   }
 
   function updateGrid() {
-    const step = DATA.steps[currentStep];
-    document.querySelectorAll('.cell img').forEach(img => {
-      const c = step.cells[img.dataset.key];
+    var step = DATA.steps[currentStep];
+    document.querySelectorAll('.cell img').forEach(function(img) {
+      var c = step.cells[img.dataset.key];
       if (c) img.src = 'data:image/png;base64,' + c.i;
     });
     clearPin();
     if (pinnedCell) {
-      const [r, c] = pinnedCell.split(',');
-      const idx = parseInt(r) * GRID_W + parseInt(c);
-      const cells = document.querySelectorAll('.cell');
+      var parts = pinnedCell.split(',');
+      var idx = parseInt(parts[0]) * GRID_W + parseInt(parts[1]);
+      var cells = document.querySelectorAll('.cell');
       if (cells[idx]) cells[idx].classList.add('pinned');
     }
     if (pinnedCell) showDetail(pinnedCell);
     else if (hoveredCell) showDetail(hoveredCell);
   }
 
-  /* ── Detail ── */
+  /* ──────────────── Detail ──────────────── */
   function showEmpty() {
     document.getElementById('detail-panel').innerHTML =
-      '<div class="detail-empty">' +
-        '<div class="msg">AWAITING SELECTION...<span class="cursor-block"></span></div>' +
-        '<div class="hint">HOVER: PREVIEW | CLICK: PIN | ESC: UNPIN</div>' +
-      '</div>';
+      '<div class="detail-empty"><div class="msg">AWAITING SELECTION...<span class="cursor-block"></span></div>' +
+      '<div class="hint">HOVER: PREVIEW | CLICK: PIN | ESC: UNPIN</div></div>';
   }
 
   function showDetail(key) {
-    const cell = DATA.steps[currentStep].cells[key];
+    var cell = DATA.steps[currentStep].cells[key];
     if (!cell) return;
-    const [r, c] = key.split(',').map(Number);
-    const region = getRegion(r, c);
-    const isPinned = pinnedCell === key;
-    const panel = document.getElementById('detail-panel');
+    var rc = key.split(',').map(Number);
+    var r = rc[0], c = rc[1];
+    var region = getRegion(r, c);
+    var isPinned = pinnedCell === key;
+    var panel = document.getElementById('detail-panel');
+    var regionHtml = region > 0 ? ' <span class="region-tag" style="background:'+regionBg(region)+'">'+regionName(region)+'</span>' : '';
+
     panel.innerHTML =
-      '<div class="share-bar">' +
-        '<div class="share-bar-label">REPORT</div>' +
-        '<div class="share-btns">' +
-          '<button class="share-btn x-btn" id="btn-share-x">&#120143; POST TO X</button>' +
-          '<button class="share-btn copy-btn" id="btn-copy-img">&#9633; COPY IMAGE</button>' +
-          '<button class="share-btn dl-btn" id="btn-dl-img">&#8595; DOWNLOAD</button>' +
-        '</div>' +
-        '<div class="share-toast" id="share-toast"></div>' +
-      '</div>' +
+      '<div class="share-bar"><div class="share-bar-label">REPORT</div>' +
+      '<div class="share-btns">' +
+        '<button class="share-btn x-btn" id="btn-share-x">&#120143; POST TO X</button>' +
+        '<button class="share-btn copy-btn" id="btn-copy-img">&#9633; COPY IMAGE</button>' +
+        '<button class="share-btn dl-btn" id="btn-dl-img">&#8595; DOWNLOAD</button>' +
+      '</div><div class="share-toast" id="share-toast"></div></div>' +
       '<div class="detail-header">' +
-        '<div class="detail-sketch-wrap"><img class="detail-sketch" src="data:image/png;base64,' + cell.i + '"></div>' +
+        '<div class="detail-sketch-wrap"><img class="detail-sketch" src="data:image/png;base64,'+cell.i+'"></div>' +
         '<div class="detail-meta">' +
-          '<div class="detail-cell-id">CELL (' + r + ',' + c + ') // STEP ' + currentStep +
-            ' <span class="region-tag" style="background:' + regionBg(region) + '">' + regionName(region) + '</span></div>' +
-          '<div class="detail-title">' + esc(cell.t) + '</div>' +
-          '<div class="detail-pinned-note">' + (isPinned ? '&#9632; PINNED - CLICK CELL TO UNPIN' : '&#9654; CLICK TO PIN') + '</div>' +
-        '</div>' +
-      '</div>' +
+          '<div class="detail-cell-id">CELL ('+r+','+c+') // STEP '+currentStep+regionHtml+'</div>' +
+          '<div class="detail-title">'+esc(cell.t)+'</div>' +
+          '<div class="detail-pinned-note">'+(isPinned?'&#9632; PINNED - CLICK CELL TO UNPIN':'&#9654; CLICK TO PIN')+'</div>' +
+        '</div></div>' +
       '<div class="detail-summary-label">SUMMARY</div>' +
-      '<div class="detail-summary">' + esc(cell.s) + '</div>';
+      '<div class="detail-summary">'+esc(cell.s)+'</div>';
     panel.scrollTop = 0;
     bindShareButtons(key);
   }
 
-  function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
-  /* ── Controls ── */
+  /* ──────────────── Controls ──────────────── */
   function setupControls() {
-    const slider = document.getElementById('step-slider');
-    const label = document.getElementById('step-label');
-    const maxStep = DATA.steps.length - 1;
+    var slider = document.getElementById('step-slider');
+    var label = document.getElementById('step-label');
+    var maxStep = DATA.steps.length - 1;
     slider.max = maxStep;
+    slider.value = 0;
+    label.textContent = padStep(0, maxStep);
 
-    const ticks = document.getElementById('tick-marks');
-    for (let s = 0; s <= maxStep; s += 10) {
-      const span = document.createElement('span');
+    var ticks = document.getElementById('tick-marks');
+    ticks.innerHTML = '';
+    var tickInterval = maxStep <= 20 ? 5 : 10;
+    for (var s = 0; s <= maxStep; s += tickInterval) {
+      var span = document.createElement('span');
       span.textContent = s;
       ticks.appendChild(span);
     }
 
-    slider.addEventListener('input', () => {
-      currentStep = parseInt(slider.value);
+    /* Re-bindable: clone to remove old listeners */
+    var oldSlider = slider;
+    var newSlider = oldSlider.cloneNode(true);
+    oldSlider.parentNode.replaceChild(newSlider, oldSlider);
+    newSlider.addEventListener('input', function() {
+      currentStep = parseInt(newSlider.value);
       label.textContent = padStep(currentStep, maxStep);
       updateGrid();
     });
-    document.getElementById('play-btn').addEventListener('click', () => { if (playing) stopPlay(); else startPlay(); });
-    document.getElementById('speed-btn').addEventListener('click', () => {
-      speedIdx = (speedIdx + 1) % speeds.length;
+
+    var playBtn = document.getElementById('play-btn');
+    var newPlay = playBtn.cloneNode(true);
+    playBtn.parentNode.replaceChild(newPlay, playBtn);
+    newPlay.addEventListener('click', function(){ if(playing) stopPlay(); else startPlay(); });
+
+    var speedBtn = document.getElementById('speed-btn');
+    var newSpeed = speedBtn.cloneNode(true);
+    speedBtn.parentNode.replaceChild(newSpeed, speedBtn);
+    newSpeed.textContent = playSpeed + 'x';
+    newSpeed.addEventListener('click', function(){
+      speedIdx = (speedIdx+1)%speeds.length;
       playSpeed = speeds[speedIdx];
-      document.getElementById('speed-btn').textContent = playSpeed + 'x';
-      if (playing) { stopPlay(); startPlay(); }
+      newSpeed.textContent = playSpeed+'x';
+      if(playing){stopPlay();startPlay();}
     });
   }
 
   function startPlay() {
     playing = true;
-    const btn = document.getElementById('play-btn');
-    btn.innerHTML = '&#9646;&#9646; STOP';
-    btn.classList.add('active');
-    const maxStep = DATA.steps.length - 1;
-    playTimer = setInterval(() => {
-      currentStep = currentStep >= maxStep ? 0 : currentStep + 1;
+    var btn = document.getElementById('play-btn');
+    btn.innerHTML = '&#9646;&#9646; STOP'; btn.classList.add('active');
+    var maxStep = DATA.steps.length - 1;
+    playTimer = setInterval(function(){
+      currentStep = currentStep >= maxStep ? 0 : currentStep+1;
       document.getElementById('step-slider').value = currentStep;
       document.getElementById('step-label').textContent = padStep(currentStep, maxStep);
       updateGrid();
-    }, Math.max(100, 700 / playSpeed));
+    }, Math.max(100, 700/playSpeed));
   }
 
   function stopPlay() {
     playing = false; clearInterval(playTimer);
-    const btn = document.getElementById('play-btn');
-    btn.innerHTML = '&#9654; PLAY';
-    btn.classList.remove('active');
+    var btn = document.getElementById('play-btn');
+    btn.innerHTML = '&#9654; PLAY'; btn.classList.remove('active');
   }
 
-  /* ── Keyboard ── */
-  document.addEventListener('keydown', (e) => {
+  /* ──────────────── Keyboard ──────────────── */
+  document.addEventListener('keydown', function(e) {
     if (!DATA) return;
-    const maxStep = DATA.steps.length - 1;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
-      e.preventDefault(); if (playing) stopPlay();
-      currentStep = Math.min(currentStep + 1, maxStep);
-    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
-      e.preventDefault(); if (playing) stopPlay();
-      currentStep = Math.max(currentStep - 1, 0);
-    } else if (e.key === ' ') {
-      e.preventDefault(); if (playing) stopPlay(); else startPlay(); return;
-    } else if (e.key === 'Escape') {
-      if (pinnedCell) { pinnedCell = null; clearPin(); if (hoveredCell) showDetail(hoveredCell); else showEmpty(); } return;
-    } else return;
+    var maxStep = DATA.steps.length - 1;
+    if (e.key==='ArrowRight'||e.key==='ArrowUp') { e.preventDefault(); if(playing)stopPlay(); currentStep=Math.min(currentStep+1,maxStep); }
+    else if (e.key==='ArrowLeft'||e.key==='ArrowDown') { e.preventDefault(); if(playing)stopPlay(); currentStep=Math.max(currentStep-1,0); }
+    else if (e.key===' ') { e.preventDefault(); if(playing)stopPlay();else startPlay(); return; }
+    else if (e.key==='Escape') { if(pinnedCell){pinnedCell=null;clearPin();if(hoveredCell)showDetail(hoveredCell);else showEmpty();} return; }
+    else return;
     document.getElementById('step-slider').value = currentStep;
     document.getElementById('step-label').textContent = padStep(currentStep, maxStep);
     updateGrid();
   });
 
-  /* ── Share card ── */
+  /* ──────────────── Share card ──────────────── */
   function generateShareCard(key) {
-    const cell = DATA.steps[currentStep].cells[key];
+    var cell = DATA.steps[currentStep].cells[key];
     if (!cell) return Promise.resolve(null);
-    const [r, c] = key.split(',').map(Number);
-    const region = getRegion(r, c);
+    var rc = key.split(',').map(Number);
+    var r = rc[0], c = rc[1];
+    var region = getRegion(r, c);
+    var dim = SKETCH_DIM;
 
-    return new Promise(resolve => {
-      const img = new Image();
-      img.onload = () => {
-        const W = 600, H = 315;
-        const canvas = document.getElementById('share-canvas');
+    return new Promise(function(resolve) {
+      var img = new Image();
+      img.onload = function() {
+        var W = 600, H = 315;
+        var canvas = document.getElementById('share-canvas');
         canvas.width = W; canvas.height = H;
-        const ctx = canvas.getContext('2d');
+        var ctx = canvas.getContext('2d');
 
-        // Background
-        ctx.fillStyle = '#0a0a12';
-        ctx.fillRect(0, 0, W, H);
-
-        // Scanlines
+        ctx.fillStyle = '#0a0a12'; ctx.fillRect(0,0,W,H);
         ctx.fillStyle = 'rgba(255,255,255,0.015)';
-        for (let y = 0; y < H; y += 4) ctx.fillRect(0, y, W, 2);
+        for (var y=0;y<H;y+=4) ctx.fillRect(0,y,W,2);
+        ctx.strokeStyle='#2a2a4a'; ctx.lineWidth=3; ctx.strokeRect(2,2,W-4,H-4);
 
-        // Border
-        ctx.strokeStyle = '#2a2a4a';
-        ctx.lineWidth = 3;
-        ctx.strokeRect(2, 2, W - 4, H - 4);
+        // Header line at top-left
+        var expId = DATA.metadata.experiment_id||'';
+        var headerParts = [];
+        if (expId) headerParts.push('EXP '+expId);
+        headerParts.push('STEP '+currentStep);
+        headerParts.push('CELL ('+r+','+c+')');
+        ctx.font='12px "Press Start 2P",monospace'; ctx.fillStyle='#555570';
+        ctx.fillText(headerParts.join(' // '),24,22);
 
-        // Sketch area
-        const sketchSize = 160;
-        const sketchX = 24;
-        const sketchY = Math.floor((H - sketchSize) / 2);
+        // Region badge at top-right
+        if (region>0) {
+          var rColors=['','#ff6655','#55aaff','#55dd77','#ffcc33'];
+          var rText=regionName(region);
+          ctx.font='10px "Press Start 2P",monospace';
+          var rW=ctx.measureText(rText).width+12;
+          var rX=W-rW-12;
+          ctx.fillStyle=rColors[region];
+          ctx.fillRect(rX,8,rW,18);
+          ctx.fillStyle='#000';
+          ctx.fillText(rText,rX+6,21);
+        }
 
-        ctx.fillStyle = '#000';
-        ctx.fillRect(sketchX - 4, sketchY - 4, sketchSize + 8, sketchSize + 8);
-        ctx.strokeStyle = '#2a2a4a';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(sketchX - 4, sketchY - 4, sketchSize + 8, sketchSize + 8);
+        // Layout constants
+        var sketchSize = 150, sketchX = 24;
+        var textX = sketchX+sketchSize+24;
+        var textW = W-textX-20;
+        var MAX_TITLE_LINES = 3;
+        var MAX_SUMMARY_LINES = 6;
+        var TITLE_LINE_H = 28;
+        var SUMMARY_LINE_H = 22;
+        var GAP = 10;
+        var areaTop = 30;              // just below header
+        var areaBottom = H - 22;       // just above footer
 
-        // Draw pixels from loaded image
-        const tmp = document.createElement('canvas');
-        tmp.width = 16; tmp.height = 16;
-        const tmpCtx = tmp.getContext('2d');
-        tmpCtx.drawImage(img, 0, 0);
-        const idata = tmpCtx.getImageData(0, 0, 16, 16).data;
-        const px = sketchSize / 16;
-        for (let sy = 0; sy < 16; sy++) {
-          for (let sx = 0; sx < 16; sx++) {
-            const idx = (sy * 16 + sx) * 4;
-            ctx.fillStyle = 'rgb(' + idata[idx] + ',' + idata[idx+1] + ',' + idata[idx+2] + ')';
-            ctx.fillRect(sketchX + sx * px, sketchY + sy * px, Math.ceil(px), Math.ceil(px));
+        // --- Measure text block height ---
+        ctx.font='24px "VT323",monospace';
+        var titleLines = wrapText(ctx,cell.t,textW);
+        var nTitle = Math.min(titleLines.length, MAX_TITLE_LINES);
+        var titleTruncated = titleLines.length > MAX_TITLE_LINES;
+
+        ctx.font='19px "VT323",monospace';
+        var sLines = wrapText(ctx,cell.s,textW);
+        var nSummary = Math.min(sLines.length, MAX_SUMMARY_LINES);
+        var summaryTruncated = sLines.length > MAX_SUMMARY_LINES;
+
+        var textBlockH = nTitle * TITLE_LINE_H + GAP + nSummary * SUMMARY_LINE_H;
+
+        // Center content area (= tallest of text or sketch) in available area
+        var contentH = Math.max(textBlockH, sketchSize);
+        var contentTop = Math.floor((areaTop + areaBottom - contentH) / 2);
+        contentTop = Math.max(areaTop, contentTop);
+
+        // Center text block within content area
+        var textStartY = contentTop + Math.floor((contentH - textBlockH) / 2);
+
+        // Center sketch within content area
+        var sketchY = contentTop + Math.floor((contentH - sketchSize) / 2);
+        sketchY = Math.max(areaTop, sketchY);
+
+        // Helper: truncate line so that it + " ..." fits within maxW
+        function truncLine(line, font, maxW) {
+          ctx.font = font;
+          var suffix = ' ...';
+          if (ctx.measureText(line + suffix).width <= maxW) return line + suffix;
+          // Trim word by word
+          var words = line.split(' ');
+          while (words.length > 1) {
+            words.pop();
+            var candidate = words.join(' ') + suffix;
+            if (ctx.measureText(candidate).width <= maxW) return candidate;
+          }
+          // Trim character by character as last resort
+          for (var n = line.length - 1; n > 0; n--) {
+            if (ctx.measureText(line.substring(0, n) + suffix).width <= maxW)
+              return line.substring(0, n) + suffix;
+          }
+          return suffix;
+        }
+
+        // --- Draw text (use 'top' baseline for accurate vertical centering) ---
+        ctx.textBaseline = 'top';
+        var textCursorY = textStartY;
+
+        // Title
+        ctx.fillStyle='#44ddee'; ctx.font='24px "VT323",monospace';
+        ctx.shadowColor='rgba(68,221,238,0.3)'; ctx.shadowBlur=6;
+        for(var i=0;i<nTitle;i++){
+          var tl = titleLines[i];
+          if (i===nTitle-1 && titleTruncated) tl = truncLine(tl, '24px "VT323",monospace', textW);
+          ctx.font='24px "VT323",monospace';
+          ctx.fillText(tl,textX,textCursorY);
+          textCursorY+=TITLE_LINE_H;
+        }
+        ctx.shadowBlur=0;
+
+        // Summary
+        textCursorY+=GAP;
+        ctx.fillStyle='#888899'; ctx.font='19px "VT323",monospace';
+        for(var i=0;i<nSummary;i++){
+          var sl = sLines[i];
+          if (i===nSummary-1 && summaryTruncated) sl = truncLine(sl, '19px "VT323",monospace', textW);
+          ctx.font='19px "VT323",monospace';
+          ctx.fillText(sl,textX,textCursorY);
+          textCursorY+=SUMMARY_LINE_H;
+        }
+
+        // Reset baseline for footer
+        ctx.textBaseline = 'alphabetic';
+
+        // --- Draw sketch (already positioned above) ---
+        ctx.fillStyle='#000'; ctx.fillRect(sketchX-4,sketchY-4,sketchSize+8,sketchSize+8);
+        ctx.strokeStyle='#2a2a4a'; ctx.lineWidth=2; ctx.strokeRect(sketchX-4,sketchY-4,sketchSize+8,sketchSize+8);
+
+        var tmp = document.createElement('canvas');
+        tmp.width=dim; tmp.height=dim;
+        var tmpCtx = tmp.getContext('2d');
+        tmpCtx.drawImage(img,0,0);
+        var idata = tmpCtx.getImageData(0,0,dim,dim).data;
+        var px = sketchSize/dim;
+        for (var sy=0;sy<dim;sy++) {
+          for (var sx=0;sx<dim;sx++) {
+            var idx=(sy*dim+sx)*4;
+            ctx.fillStyle='rgb('+idata[idx]+','+idata[idx+1]+','+idata[idx+2]+')';
+            ctx.fillRect(sketchX+sx*px,sketchY+sy*px,Math.ceil(px),Math.ceil(px));
           }
         }
 
-        // Text area
-        const textX = sketchX + sketchSize + 24;
-        const textW = W - textX - 20;
-
-        // Cell info
-        ctx.font = '12px "Press Start 2P", monospace';
-        ctx.fillStyle = '#555570';
-        ctx.fillText('CELL (' + r + ',' + c + ') // STEP ' + currentStep, textX, 40);
-
-        // Region badge
-        const rColors = ['','#ff6655','#55aaff','#55dd77','#ffcc33'];
-        ctx.fillStyle = rColors[region];
-        const rText = regionName(region);
-        const rMetrics = ctx.measureText(rText);
-        ctx.fillRect(textX, 48, rMetrics.width + 12, 18);
-        ctx.fillStyle = '#000';
-        ctx.font = '10px "Press Start 2P", monospace';
-        ctx.fillText(rText, textX + 6, 61);
-
-        // Title
-        ctx.fillStyle = '#44ddee';
-        ctx.font = '20px "VT323", monospace';
-        ctx.shadowColor = 'rgba(68,221,238,0.3)';
-        ctx.shadowBlur = 6;
-        const titleLines = wrapText(ctx, cell.t, textW);
-        let ty = 88;
-        for (let i = 0; i < Math.min(titleLines.length, 4); i++) {
-          ctx.fillText(titleLines[i], textX, ty);
-          ty += 24;
-        }
-        ctx.shadowBlur = 0;
-
-        // Summary excerpt
-        ctx.fillStyle = '#888899';
-        ctx.font = '16px "VT323", monospace';
-        const maxSummaryY = H - 40;
-        const summaryLines = wrapText(ctx, cell.s, textW);
-        let sy2 = ty + 8;
-        for (let i = 0; i < summaryLines.length && sy2 < maxSummaryY; i++) {
-          ctx.fillText(summaryLines[i], textX, sy2);
-          sy2 += 19;
-        }
-        if (sy2 >= maxSummaryY) ctx.fillText('...', textX, sy2);
-
-        // Footer
-        ctx.fillStyle = '#333348';
-        ctx.font = '10px "Press Start 2P", monospace';
-        ctx.fillText('LOGOS-CA // BIOLOGIST REPORTS', 24, H - 14);
-
+        ctx.fillStyle='#333348'; ctx.font='10px "Press Start 2P",monospace';
+        ctx.fillText('LOGOS-CA // BIOLOGIST REPORTS'+(expId?' // EXP '+expId:''),24,H-14);
         resolve(canvas);
       };
-      img.src = 'data:image/png;base64,' + cell.i;
+      img.src = 'data:image/png;base64,'+cell.i;
     });
   }
 
-  function wrapText(ctx, text, maxWidth) {
-    const words = text.split(/\s+/);
-    const lines = [];
-    let line = '';
-    for (const word of words) {
-      const test = line ? line + ' ' + word : word;
-      if (ctx.measureText(test).width > maxWidth && line) {
-        lines.push(line);
-        line = word;
-      } else {
-        line = test;
-      }
+  function wrapText(ctx,text,maxWidth) {
+    var words=text.split(/\s+/); var lines=[]; var line='';
+    for(var w=0;w<words.length;w++){
+      var test=line?line+' '+words[w]:words[w];
+      if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=words[w];}
+      else line=test;
     }
-    if (line) lines.push(line);
+    if(line) lines.push(line);
     return lines;
   }
 
   function getShareText(key) {
-    const cell = DATA.steps[currentStep].cells[key];
-    if (!cell) return '';
-    const [r, c] = key.split(',').map(Number);
-    return cell.t + '\n\n' +
-      'Cell(' + r + ',' + c + ') Step ' + currentStep +
-      ' #LOGOS_CA\n' +
+    var cell=DATA.steps[currentStep].cells[key];
+    if(!cell)return '';
+    var rc=key.split(',').map(Number);
+    var expId=DATA.metadata.experiment_id||'';
+    return cell.t+'\n\nCell('+rc[0]+','+rc[1]+') Step '+currentStep+
+      (expId?' Exp '+expId:'')+' #LOGOS_CA\n'+
       window.location.href.split('?')[0].split('#')[0];
   }
 
-  function canvasToBlob(canvas) {
-    return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-  }
+  function canvasToBlob(canvas){return new Promise(function(r){canvas.toBlob(r,'image/png');});}
 
   async function shareToX(key) {
-    const toast = document.getElementById('share-toast');
-    toast.textContent = 'GENERATING...';
-    const canvas = await generateShareCard(key);
-    if (!canvas) return;
-
-    const text = getShareText(key);
-    const blob = await canvasToBlob(canvas);
-
-    // Try Web Share API first (mobile / supporting browsers)
-    if (navigator.share && navigator.canShare) {
-      const file = new File([blob], 'logos-ca-report.png', { type: 'image/png' });
-      const shareData = { text: text, files: [file] };
-      try {
-        if (navigator.canShare(shareData)) {
-          await navigator.share(shareData);
-          toast.textContent = 'SHARED!';
-          setTimeout(() => { toast.textContent = ''; }, 3000);
-          return;
-        }
-      } catch(e) {
-        if (e.name === 'AbortError') { toast.textContent = ''; return; }
-      }
+    var toast=document.getElementById('share-toast');
+    toast.textContent='GENERATING...';
+    var canvas=await generateShareCard(key); if(!canvas)return;
+    var text=getShareText(key); var blob=await canvasToBlob(canvas);
+    var expId=DATA.metadata.experiment_id||'';
+    if(navigator.share&&navigator.canShare){
+      var file=new File([blob],'logos-ca'+(expId?'-exp'+expId:'')+'-report.png',{type:'image/png'});
+      var sd={text:text,files:[file]};
+      try{if(navigator.canShare(sd)){await navigator.share(sd);toast.textContent='SHARED!';setTimeout(function(){toast.textContent='';},3000);return;}}
+      catch(e){if(e.name==='AbortError'){toast.textContent='';return;}}
     }
-
-    // Fallback: copy image to clipboard, then open X intent
-    try {
-      await navigator.clipboard.write([
-        new ClipboardItem({ 'image/png': blob })
-      ]);
-      toast.textContent = 'IMAGE COPIED! PASTE INTO YOUR POST.';
-    } catch(e) {
-      toast.textContent = 'OPEN X - ATTACH IMAGE MANUALLY';
-    }
-
-    const intentUrl = 'https://x.com/intent/post?text=' + encodeURIComponent(text);
-    window.open(intentUrl, '_blank', 'width=550,height=420');
-    setTimeout(() => { toast.textContent = ''; }, 5000);
+    try{await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);toast.textContent='IMAGE COPIED! PASTE INTO YOUR POST.';}
+    catch(e){toast.textContent='OPEN X - ATTACH IMAGE MANUALLY';}
+    window.open('https://x.com/intent/post?text='+encodeURIComponent(text),'_blank','width=550,height=420');
+    setTimeout(function(){toast.textContent='';},5000);
   }
 
   async function copyImage(key) {
-    const toast = document.getElementById('share-toast');
-    toast.textContent = 'GENERATING...';
-    const canvas = await generateShareCard(key);
-    if (!canvas) return;
-
-    try {
-      const blob = await canvasToBlob(canvas);
-      await navigator.clipboard.write([
-        new ClipboardItem({ 'image/png': blob })
-      ]);
-      toast.textContent = 'IMAGE COPIED TO CLIPBOARD!';
-    } catch(e) {
-      toast.textContent = 'COPY FAILED - USE DOWNLOAD INSTEAD';
-    }
-    setTimeout(() => { toast.textContent = ''; }, 3000);
+    var toast=document.getElementById('share-toast');
+    toast.textContent='GENERATING...';
+    var canvas=await generateShareCard(key); if(!canvas)return;
+    try{var blob=await canvasToBlob(canvas);await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);toast.textContent='IMAGE COPIED TO CLIPBOARD!';}
+    catch(e){toast.textContent='COPY FAILED - USE DOWNLOAD INSTEAD';}
+    setTimeout(function(){toast.textContent='';},3000);
   }
 
   async function downloadImage(key) {
-    const toast = document.getElementById('share-toast');
-    toast.textContent = 'GENERATING...';
-    const canvas = await generateShareCard(key);
-    if (!canvas) return;
-
-    const a = document.createElement('a');
-    a.download = 'logos-ca-step' + currentStep + '-cell' + key.replace(',', '_') + '.png';
-    a.href = canvas.toDataURL('image/png');
-    a.click();
-    toast.textContent = 'DOWNLOADING...';
-    setTimeout(() => { toast.textContent = ''; }, 2000);
+    var toast=document.getElementById('share-toast');
+    toast.textContent='GENERATING...';
+    var canvas=await generateShareCard(key); if(!canvas)return;
+    var a=document.createElement('a');
+    var expId=DATA.metadata.experiment_id||'';
+    a.download='logos-ca'+(expId?'-exp'+expId:'')+'-step'+currentStep+'-cell'+key.replace(',','_')+'.png';
+    a.href=canvas.toDataURL('image/png'); a.click();
+    toast.textContent='DOWNLOADING...';
+    setTimeout(function(){toast.textContent='';},2000);
   }
 
   function bindShareButtons(key) {
-    const xBtn = document.getElementById('btn-share-x');
-    const copyBtn = document.getElementById('btn-copy-img');
-    const dlBtn = document.getElementById('btn-dl-img');
-    if (xBtn) xBtn.addEventListener('click', (e) => { e.stopPropagation(); shareToX(key); });
-    if (copyBtn) copyBtn.addEventListener('click', (e) => { e.stopPropagation(); copyImage(key); });
-    if (dlBtn) dlBtn.addEventListener('click', (e) => { e.stopPropagation(); downloadImage(key); });
+    var x=document.getElementById('btn-share-x');
+    var cp=document.getElementById('btn-copy-img');
+    var dl=document.getElementById('btn-dl-img');
+    if(x) x.addEventListener('click',function(e){e.stopPropagation();shareToX(key);});
+    if(cp) cp.addEventListener('click',function(e){e.stopPropagation();copyImage(key);});
+    if(dl) dl.addEventListener('click',function(e){e.stopPropagation();downloadImage(key);});
   }
 
-  /* ── Init ── */
+  /* ──────────────── Init ──────────────── */
+  window.addEventListener('rebuild-exp-list', buildExpList);
+
   async function init() {
-    const bootEl = await bootSequence();
-    const msgEl = document.getElementById('loading-msg');
+    var bootEl = await bootSequence();
+    var msgEl = document.getElementById('loading-msg');
     try {
-      const resp = await fetch('data.json');
+      bootEl.textContent += 'Fetching experiments.json... ';
+      var resp = await fetch('experiments.json');
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
-      bootEl.textContent += 'Fetching data.json... ';
+      MANIFEST = await resp.json();
       await sleep(200);
       bootEl.textContent += 'OK\n';
-      bootEl.textContent += 'Parsing JSON......... ';
-      DATA = await resp.json();
-      await sleep(150);
-      bootEl.textContent += 'OK\n';
-      bootEl.textContent += 'Building interface... ';
-      buildGrid(); setupControls(); updateGrid();
-      await sleep(150);
-      bootEl.textContent += 'OK\n\n';
+      bootEl.textContent += 'Found ' + MANIFEST.length + ' experiment(s)\n\n';
       bootEl.textContent += 'READY.\n';
       msgEl.textContent = '';
-      await sleep(500);
+      await sleep(400);
 
-      // Boot done -> show intro screen
+      /* Boot done -> show intro */
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('intro-screen').classList.add('visible');
 
-      // Intro button -> enter app
-      document.getElementById('intro-enter-btn').addEventListener('click', () => {
+      /* Intro -> experiment selection */
+      document.getElementById('intro-enter-btn').addEventListener('click', function() {
         document.getElementById('intro-screen').classList.add('hidden');
-        setTimeout(() => {
+        setTimeout(function() {
           document.getElementById('intro-screen').style.display = 'none';
-          document.getElementById('app').classList.add('ready');
+          buildExpList();
+          document.getElementById('exp-screen').classList.add('visible');
         }, 600);
+      });
+
+      /* Back button: app -> experiment selection */
+      document.getElementById('back-btn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        showExpScreen();
       });
 
     } catch (err) {
       bootEl.textContent += 'FAIL\n\nERROR: ' + err.message + '\n';
-      msgEl.textContent = 'Make sure data.json is in the same directory.';
+      msgEl.textContent = 'Make sure experiments.json is in the same directory.';
     }
   }
 
