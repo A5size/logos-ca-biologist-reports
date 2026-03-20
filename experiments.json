@@ -1,0 +1,52 @@
+[
+  {
+    "id": "02-02",
+    "desc": "Baseline configuration using GPT-5-mini on an 11x11 field with a Moore neighborhood and 16x16 sketches. The next report is generated from the Previous report and Nearby reports.",
+    "file": "exp-02-02-data.json",
+    "grid_w": 11,
+    "grid_h": 11,
+    "model": "gpt-5-mini",
+    "steps": 38,
+    "sketch_size": 16
+  },
+  {
+    "id": "02-03",
+    "desc": "Builds on 02-02 by augmenting the system prompt with directives such as 'original and novel' and 'interesting fabricated report', and by explicitly requiring title, summary, and sketch outputs. The subject may be an organism, environment, biome, or other subject.",
+    "file": "exp-02-03-data.json",
+    "grid_w": 11,
+    "grid_h": 11,
+    "model": "gpt-5-mini",
+    "steps": 51,
+    "sketch_size": 16
+  },
+  {
+    "id": "02-08",
+    "desc": "Builds on the 02-03 line by constraining summaries to 300 words or fewer and introducing a dedicated early-phase prompt for the first three steps, where the Previous report is withheld and only reports from environmentally distinct regions are provided to encourage fundamentally different subjects.",
+    "file": "exp-02-08-data.json",
+    "grid_w": 11,
+    "grid_h": 11,
+    "model": "gpt-5-mini",
+    "steps": 39,
+    "sketch_size": 16
+  },
+  {
+    "id": "03-02",
+    "desc": "Builds on the 02-08 line by switching to gemma-3-12b-it-qat via a local OpenAI-compatible API, reducing the field to 10x10 and sketches to 8x8, adopting a sparsely coupled special von Neumann neighborhood over four 5x5 regions, and initializing the field from a 5x5 seed grid evolved for five steps.",
+    "file": "exp-03-02-data.json",
+    "grid_w": 10,
+    "grid_h": 10,
+    "model": "gemma-3-12b-it-qat",
+    "steps": 9,
+    "sketch_size": 8
+  },
+  {
+    "id": "04-03",
+    "desc": "Builds on 03-02 while preserving the 10x10 field, the sparsely coupled special von Neumann neighborhood across four regions, and the seed-based initialization scheme, but switching back to GPT-5-mini and restoring 16x16 sketches.",
+    "file": "exp-04-03-data.json",
+    "grid_w": 10,
+    "grid_h": 10,
+    "model": "gpt-5-mini",
+    "steps": 51,
+    "sketch_size": 16
+  }
+]
