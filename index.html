@@ -777,6 +777,17 @@ main { flex: 1; display: flex; overflow: hidden; }
   let GRID_H = 10;
   let HAS_REGIONS = false;
   let SKETCH_DIM = 16;
+  let hideDetailTimer = null;
+
+  function scheduleHideDetail() {
+    cancelHideDetail();
+    hideDetailTimer = setTimeout(function() {
+      if (!pinnedCell && !hoveredCell) showEmpty();
+    }, 200);
+  }
+  function cancelHideDetail() {
+    if (hideDetailTimer) { clearTimeout(hideDetailTimer); hideDetailTimer = null; }
+  }
 
   function getRegion(r, c) {
     if (!HAS_REGIONS) return 0;
@@ -950,10 +961,11 @@ main { flex: 1; display: flex; overflow: hidden; }
         cell.appendChild(img);
 
         (function(k, el) {
-          el.addEventListener('mouseenter', function() { hoveredCell = k; if (!pinnedCell) showDetail(k); });
-          el.addEventListener('mouseleave', function() { hoveredCell = null; if (!pinnedCell) showEmpty(); });
+          el.addEventListener('mouseenter', function() { cancelHideDetail(); hoveredCell = k; if (!pinnedCell) showDetail(k); });
+          el.addEventListener('mouseleave', function() { hoveredCell = null; if (!pinnedCell) scheduleHideDetail(); });
           el.addEventListener('click', function(e) {
             e.stopPropagation();
+            cancelHideDetail();
             if (pinnedCell === k) { pinnedCell = null; clearPin(); if (hoveredCell) showDetail(hoveredCell); else showEmpty(); }
             else { pinnedCell = k; clearPin(); el.classList.add('pinned'); showDetail(k); scrollToDetail(); }
           });
@@ -963,6 +975,8 @@ main { flex: 1; display: flex; overflow: hidden; }
       }
     }
     document.getElementById('detail-panel').onclick = function(e) { e.stopPropagation(); };
+    document.getElementById('detail-panel').addEventListener('mouseenter', cancelHideDetail);
+    document.getElementById('detail-panel').addEventListener('touchstart', cancelHideDetail);
     document.onclick = function() {
       if (pinnedCell) { pinnedCell = null; clearPin(); if (hoveredCell) showDetail(hoveredCell); else showEmpty(); }
     };
