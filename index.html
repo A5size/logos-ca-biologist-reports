@@ -498,6 +498,39 @@ main { flex: 1; display: flex; overflow: hidden; }
   font-size: 7px; color: var(--crt-gray-dim);
   text-align: center; margin-top: 24px;
 }
+.intro-support {
+  display: block;
+  text-align: center;
+  margin-top: 12px;
+  font-family: var(--pixel);
+  font-size: 7px;
+  color: var(--crt-amber);
+  text-decoration: none;
+  text-shadow: 0 0 4px rgba(255, 170, 34, 0.15);
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.intro-support:hover { opacity: 1; text-decoration: underline; }
+.exp-support {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  font-family: var(--pixel);
+  font-size: 7px;
+  color: var(--crt-amber);
+  text-decoration: none;
+  text-shadow: 0 0 4px rgba(255, 170, 34, 0.15);
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.exp-support:hover { opacity: 1; text-decoration: underline; }
+.status-links { display: flex; gap: 8px; flex-shrink: 0; }
+.status-bar .support-link {
+  color: var(--crt-amber);
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.status-bar .support-link:hover { color: var(--crt-yellow); opacity: 1; }
 
 /* ─── Experiment selection screen ─── */
 #exp-screen {
@@ -713,6 +746,7 @@ main { flex: 1; display: flex; overflow: hidden; }
     </div>
     <button class="intro-enter-btn" id="intro-enter-btn">&#9654; READ THE REPORTS</button>
     <div class="intro-hint">K. Utimula, 2026</div>
+    <a class="intro-support" href="https://ofuse.me/alifepraparat" target="_blank" rel="noopener">&#9733; SUPPORT THIS PROJECT</a>
   </div>
 </div>
 
@@ -729,6 +763,7 @@ main { flex: 1; display: flex; overflow: hidden; }
       <div class="exp-loading">LOADING MANIFEST...</div>
     </div>
     <div class="exp-footer-hint">K. Utimula, 2026 // LOGOS-CA</div>
+    <a class="exp-support" href="https://ofuse.me/alifepraparat" target="_blank" rel="noopener">&#9733; SUPPORT THIS PROJECT</a>
   </div>
 </div>
 
@@ -768,7 +803,10 @@ main { flex: 1; display: flex; overflow: hidden; }
 
   <div class="status-bar">
     <span id="status-text">LOGOS-CA // K.UTIMULA 2026</span>
-    <a href="https://github.com/A5size/LOGOS-CA" target="_blank" rel="noopener">[ PAPER &amp; CODE ]</a>
+    <span class="status-links">
+      <a href="https://github.com/A5size/LOGOS-CA" target="_blank" rel="noopener">[ PAPER &amp; CODE ]</a>
+      <a href="https://ofuse.me/alifepraparat" target="_blank" rel="noopener" class="support-link">[ &#9733; SUPPORT ]</a>
+    </span>
   </div>
 </div>
 
